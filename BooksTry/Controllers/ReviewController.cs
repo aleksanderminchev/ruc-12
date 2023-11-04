@@ -19,7 +19,7 @@ namespace BooksTry.Controllers
         [HttpGet]
         public IEnumerable<Review> Get()
         {
-            string selectString = "select * from REVIEW;";
+            string selectString = "select * from user_rating;";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -41,19 +41,21 @@ namespace BooksTry.Controllers
 
         private Review ReadItem(SqlDataReader reader)
         {
-            int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-            int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-            int bookId = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
-            int rating = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-            string rText = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            int id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+            int userId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+            int titleId = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+            int value = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
+            string comment = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            string createdAt = reader.IsDBNull(4) ? "" : reader.GetString(4);
 
             Review item = new Review()
             {
-                ReviewId = reviewId,
-                PersonId = personId,
-                BookId = bookId,
-                Rating = rating,
-                RText = rText
+                Id = id,
+                UserId = userId,
+                TitleId = titleId,
+                Value - value,
+                Comment = comment,
+                CreatedAt = createdAt
             };
 
             return item;
@@ -65,7 +67,7 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from REVIEW where ReviewId = @id";
+                string selectString = "select * from user_rating where Id = @id";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -98,15 +100,15 @@ namespace BooksTry.Controllers
         [HttpPost]
         public bool Post([FromBody] Review value)
         {
-            string insertString = "insert into REVIEW (PersonId, BookId, RText) values(@personId, @bookId, @rText);";
+            string insertString = "insert into user_rating (UserId, TitleId, Comment) values(@personId, @titleId, @comment);";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 using (SqlCommand command = new SqlCommand(insertString, conn))
                 {
-                    command.Parameters.AddWithValue("@personId", value.PersonId);
-                    command.Parameters.AddWithValue("@bookId", value.BookId);
-                    command.Parameters.AddWithValue("@rText", value.RText);
+                    command.Parameters.AddWithValue("@userId", value.PersonId);
+                    command.Parameters.AddWithValue("@titleId", value.BookId);
+                    command.Parameters.AddWithValue("@comment", value.RText);
 
                     int rowsAffected = command.ExecuteNonQuery();
                     return true;
