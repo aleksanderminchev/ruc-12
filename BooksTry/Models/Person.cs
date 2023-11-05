@@ -1,34 +1,32 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BooksTry.Models
 {
-    public class Person
+    public class CastMember
     {
-        public int PersonId { get; set; }
+        public string NCost { get; set; }
         public string FullName { get; set; }
-        public string Username { get; set; }
-        public string Pass { get; set; }
-        public string Email { get; set; }
-        public int Type { get; set; } //in db is int, later on connect to enum
-        public string UserPhoto { get; set; }
+        public string BirthYear { get; set; }
+        public string DeathYear { get; set; }
+        public string Profession { get; set; }
+        public string KnownMovies { get; set; }
 
-        public Person()
+        public CastMember(int nCost, string fullName, string birthYear, string deathYear, string profession, string knownMovies)
         {
-                
+            NCost = nCost;
+            FullName = fullName;
+            BirthYear = birthYear;
+            DeathYear = deathYear;
+            Profession = profession;
+            KnownMovies = knownMovies;
         }
 
-        public Person(int personId, string fullName, string username, string pass, string email, int type, string userPhoto)
+        public CastMember()
         {
-            PersonId = personId;
-            FullName = fullName;
-            Username = username;
-            Pass = pass;
-            Email = email;
-            Type = type;
-            UserPhoto = userPhoto;
+
         }
     }
 }
