@@ -6,50 +6,58 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class TitleController : ControllerBase
     {
         private string connectionString = ConnectionString.connectionString;
 
-        private Book ReadItem(SqlDataReader reader)
+        private Title ReadItem(SqlDataReader reader)
         {
-            int bookId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-            string title = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            string author = reader.IsDBNull(2) ? "" : reader.GetString(2);
-            string bookDes = reader.IsDBNull(3) ? "" : reader.GetString(3);
-            string genre = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            decimal price = reader.IsDBNull(5) ? 0 : reader.GetDecimal(5);
-            int nop = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
-            int nov = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
-            string bookPdf = reader.IsDBNull(8) ? "" : reader.GetString(8);
-            string coverPhoto = reader.IsDBNull(9) ? "" : reader.GetString(9);
+            string titleId = reader.IsDBNull(0) ? "" : reader.GetString(0);
+            string primaryTitle = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            string originalTitle = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            char titleType = reader.IsDBNull(3) ? '\0' : reader.GetChar(3);
+            string author = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            string titleDes = reader.IsDBNull(5) ? "" : reader.GetString(5);
+            string genres = reader.IsDBNull(6) ? "" : reader.GetString(6);
+            bool isAdult = reader.IsDBNull(7) ? false : reader.GetBoolean(7);
+            char startYear = reader.IsDBNull(8) ? '\0' : reader.GetChar(8);
+            char endYear = reader.IsDBNull(9) ? '\0' : reader.GetChar(9);
+            int runTimeInMinutes = reader.IsDBNull(10) ? 0 : reader.GetInt32(10);
+            string parentId = reader.IsDBNull(11) ? "" : reader.GetString(11);
+            string plot = reader.IsDBNull(12) ? "" : reader.GetString(12);
+            string poster = reader.IsDBNull(13) ? "" : reader.GetString(13);
 
-            Book item = new Book()
+            Title item = new Title()
             {
-                BookId = bookId,
-                Title = title,
+                TitleID = titleId,
+                PrimaryTitle = primaryTitle,
+                OriginalTitle = originalTitle,
+                TitleType = titleType,
                 Author = author,
-                BookDes = bookDes,
-                Genre = genre,
-                Price = price,
-                NoP = nop,
-                NoV = nov,
-                BookPdf = bookPdf,
-                CoverPhoto = coverPhoto
+                TitleDes = titleDes,
+                Genres = genres,
+                IsAdult = isAdult,
+                StartYear = startYear,
+                EndYear = endYear,
+                RunTimeInMinutes = runTimeInMinutes,
+                ParentId = parentId,
+                Plot = plot,
+                Poster = poster
             };
 
             return item;
         }
 
-        // GET: api/Book
+
+        // GET: api/Title
         [HttpGet]
-        public IEnumerable<Book> Get()
+        public IEnumerable<Title> Get()
         {
-            string selectString = "select * from BOOK;";
+            string selectString = "select * from TITLE;";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -57,10 +65,10 @@ namespace BooksTry.Controllers
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        List<Book> result = new List<Book>();
+                        List<Title> result = new List<Title>();
                         while (reader.Read())
                         {
-                            Book item = ReadItem(reader);
+                            Title item = ReadItem(reader);
                             result.Add(item);
                         }
                         return result;
@@ -69,14 +77,14 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/5
+        // GET: api/Title/5
         //[HttpGet("{id}", Name = "Get")]
         [Route("{id:int}")]
-        public Book Get(int id)
+        public Title Get(int id)
         {
             try
             {
-                string selectString = "select * from BOOK where BookId = @id";
+                string selectString = "select * from TITLE where TitleId = @id";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -105,15 +113,15 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/Free
+        // GET: api/Title/Free
         //[HttpGet("{price}", Name = "Get")]
         [Route("Free")]
-        public IEnumerable<Book> Get6FreeBooks(Decimal price)
+        public IEnumerable<Title> Get6FreeTitles(Decimal price)
         {
             try
             {
-                //string selectString = "select * from BOOK where genre LIKE @genre";
-                string selectString = "SELECT TOP 6 * FROM BOOK WHERE Price = '0';";     //here i changed
+                //string selectString = "select * from TITLE where genre LIKE @genre";
+                string selectString = "SELECT TOP 6 * FROM TITLE WHERE Price = '0';";     //here i changed
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -122,10 +130,10 @@ namespace BooksTry.Controllers
                         command.Parameters.AddWithValue("@price", price);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -140,14 +148,14 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/Free
+        // GET: api/Title/Free
         //[HttpGet("{price}", Name = "Get")]
         [Route("Fantasy")]
-        public IEnumerable<Book> Get6FantasyBooks()
+        public IEnumerable<Title> Get6FantasyTitles()
         {
             try
             {
-                string selectString = "SELECT TOP 6 * FROM dbo.BOOK WHERE Genre LIKE 'Fantasy';";
+                string selectString = "SELECT TOP 6 * FROM dbo.TITLE WHERE Genre LIKE 'Fantasy';";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -155,10 +163,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -173,14 +181,14 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/Suggestions
+        // GET: api/Title/Suggestions
         //[HttpGet("{price}", Name = "Get")]
         [Route("Suggestions")]
-        public IEnumerable<Book> GetSuggestionsBooks()
+        public IEnumerable<Title> GetSuggestionsTitles()
         {
             try
             {
-                string selectString = "SELECT TOP 5 * FROM dbo.BOOK ORDER BY NEWID();";
+                string selectString = "SELECT TOP 5 * FROM dbo.TITLE ORDER BY NEWID();";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -188,10 +196,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -206,14 +214,14 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/Horror
+        // GET: api/Title/Horror
         //[HttpGet("{genre}", Name = "Get")]
         [Route("{genre}")]
-        public IEnumerable<Book> GetBooksByGenre(String genre)
+        public IEnumerable<Title> GetTitlesByGenre(String genre)
         {
             try
             {
-                string selectString = "select * from BOOK where genre LIKE @genre";
+                string selectString = "select * from TITLE where genre LIKE @genre";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -222,10 +230,10 @@ namespace BooksTry.Controllers
                         command.Parameters.AddWithValue("@genre", genre);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -240,14 +248,14 @@ namespace BooksTry.Controllers
             }
         }
 
-        // GET: api/Book/Horror
+        // GET: api/Title/Horror
         //[HttpGet("{genre}", Name = "Get")]
         [Route("search/{name}")]
-        public IEnumerable<Book> GetBooksByName(String name)
+        public IEnumerable<Title> GetTitlesByName(String name)
         {
             try
             {
-                string selectString = "select * from dbo.BOOK as b where b.Title LIKE @title or b.Author LIKE @author";
+                string selectString = "select * from dbo.TITLE as b where b.Title LIKE @title or b.Author LIKE @author";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -257,10 +265,10 @@ namespace BooksTry.Controllers
                         command.Parameters.AddWithValue("@author", name);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -275,13 +283,13 @@ namespace BooksTry.Controllers
             }
         }
 
-        // POST: api/Book
+        // POST: api/Title
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT: api/Book/5
+        // PUT: api/Title/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
@@ -294,51 +302,47 @@ namespace BooksTry.Controllers
         }
 
 
-        // Book review's
-        private BookReviews ReadBookReviews(SqlDataReader reader)
+        // Title review's
+        private Review ReadReview(SqlDataReader reader)
         {
             int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
             int bookId = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
             int rating = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
             string rText = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            string username = reader.IsDBNull(5) ? "" : reader.GetString(5);
-            string userPhoto = reader.IsDBNull(6) ? "" : reader.GetString(6);
 
-            BookReviews item = new BookReviews()
+            Review item = new Review()
             {
                 ReviewId = reviewId,
                 PersonId = personId,
                 BookId = bookId,
-                ReviewRating = rating,
-                ReviewText = rText,
-                PersonUsername = username,
-                PersonUserPhoto = userPhoto
+                Rating = rating,
+                RText = rText,
             };
 
             return item;
         }
 
-        // GET: api/Book/5/Reviews
-        //[HttpGet("{bookId}", Name = "Get")]
-        [Route("{bookId}/reviews")]
-        public IEnumerable<BookReviews> GetReviews(int bookId)
+        // GET: api/Title/5/Reviews
+        //[HttpGet("{titleId}", Name = "Get")]
+        [Route("{titleId}/reviews")]
+        public IEnumerable<Review> GetReviews(int titleId)
         {
             try
             {
-                string selectString = "select r.*, p.Username, p.UserPhoto from dbo.REVIEW as r inner join dbo.PERSON as p on r.PersonId = p.PersonId where BookId = @id";
+                string selectString = "select r.*, p.Username, p.UserPhoto from dbo.REVIEW as r inner join dbo.PERSON as p on r.PersonId = p.PersonId where TitleId = @id";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
                     using (SqlCommand command = new SqlCommand(selectString, conn))
                     {
-                        command.Parameters.AddWithValue("@id", bookId);
+                        command.Parameters.AddWithValue("@id", titleId);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<BookReviews> result = new List<BookReviews>();
+                            List<Review> result = new List<Review>();
                             while (reader.Read())
                             {
-                                BookReviews item = ReadBookReviews(reader);
+                                Review item = ReadReview(reader);
                                 result.Add(item);
                             }
                             return result;
@@ -353,12 +357,12 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("allfreebooks")]
-        public int GetAllFreeBooks()
+        [Route("allfreetitles")]
+        public int GetAllFreeTitles()
         {
             try
             {
-                string selectString = "select * from BOOK where Price = '0'";
+                string selectString = "select * from TITLE where Price = '0'";
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
@@ -367,10 +371,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result.Count;
@@ -384,12 +388,12 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("allpaidbooks")]
-        public int GetAllPaidBooks()
+        [Route("allpaidtitles")]
+        public int GetAllPaidTitles()
         {
             try
             {
-                string selectString = "select * from BOOK where Price != '0'";
+                string selectString = "select * from TITLE where Price != '0'";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -397,10 +401,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Book> result = new List<Book>();
+                            List<Title> result = new List<Title>();
                             while (reader.Read())
                             {
-                                Book item = ReadItem(reader);
+                                Title item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result.Count;

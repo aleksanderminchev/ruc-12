@@ -12,15 +12,15 @@ namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonController : ControllerBase
+    public class UserController : ControllerBase
     {
         private string connectionString = ConnectionString.connectionString;
 
-        // GET: api/Person
+        // GET: api/User
         [HttpGet]
-        public IEnumerable<Person> Get()
+        public IEnumerable<User> Get()
         {
-            string selectString = "select * from PERSON;";
+            string selectString = "select * from USER;";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -28,10 +28,10 @@ namespace BooksTry.Controllers
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        List<Person> result = new List<Person>();
+                        List<User> result = new List<User>();
                         while (reader.Read())
                         {
-                            Person item = ReadItem(reader);
+                            User item = ReadItem(reader);
                             result.Add(item);
                         }
                         return result;
@@ -40,37 +40,37 @@ namespace BooksTry.Controllers
             }
         }
 
-        private Person ReadItem(SqlDataReader reader)
+        private User ReadItem(SqlDataReader reader)
         {
-            int id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-            string fullName = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            string username = reader.IsDBNull(2) ? "" : reader.GetString(2);
-            string pass = reader.IsDBNull(3) ? "" : reader.GetString(3);
-            string email = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            int type = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
-            string userPhoto = reader.IsDBNull(6) ? "" : reader.GetString(6);
+            int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+            string firstName = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            string lastName = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            string username = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            string pass = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            string email = reader.IsDBNull(5) ? "" : reader.GetString(5);
+            bool isVerified = reader.IsDBNull(6) ? false : reader.GetBoolean(6);
 
-            Person item = new Person()
+            User item = new User()
             {
-                PersonId = id,
-                FullName = fullName,
+                UserId = userId,
+                FirstName = firstName,
+                LastName = lastName,
                 Username = username,
                 Pass = pass,
                 Email = email,
-                Type = type,
-                UserPhoto = userPhoto
+                IsVerified = isVerified
             };
 
             return item;
         }
 
-        // GET: api/Person/5
+        // GET: api/User/5
         [Route("{id}")]
-        public Person Get(int id)
+        public User Get(int id)
         {
             try
             {
-                string selectString = "select * from PERSON where PersonId = @id";
+                string selectString = "select * from USER where UserId = @id";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -104,7 +104,7 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from PERSON where UserType = 1";
+                string selectString = "select * from USER where UserType = 1";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -112,10 +112,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Person> result = new List<Person>();
+                            List<User> result = new List<User>();
                             while (reader.Read())
                             {
-                                Person item = ReadItem(reader);
+                                User item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result.Count;
@@ -135,7 +135,7 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from PERSON where UserType = 2";
+                string selectString = "select * from USER where UserType = 2";
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -143,10 +143,10 @@ namespace BooksTry.Controllers
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            List<Person> result = new List<Person>();
+                            List<User> result = new List<User>();
                             while (reader.Read())
                             {
-                                Person item = ReadItem(reader);
+                                User item = ReadItem(reader);
                                 result.Add(item);
                             }
                             return result.Count;
@@ -161,13 +161,13 @@ namespace BooksTry.Controllers
             }
         }
 
-        // POST: api/Person
+        // POST: api/User
         [HttpPost]
-        public async void PostAsync([FromBody] Person value)
+        public async void PostAsync([FromBody] User value)
         {
 
             string insertString =
-                "INSERT INTO PERSON (FullName, Username, Pass, Email, UserType) values(@FullName, @Username, @Pass, @Email, @type);";
+                "INSERT INTO USER (FirstName,LastName, Username, Pass, Email, UserType) values(@FirstName,@LastName, @Username, @Pass, @Email, @type);";
             bool item = CheckUsernameValidation(value.Username);
 
             if (item == true)
@@ -178,7 +178,9 @@ namespace BooksTry.Controllers
                     using (SqlCommand command = new SqlCommand(insertString, conn))
                     {
 
-                        command.Parameters.AddWithValue("@FullName", value.FullName);
+                        command.Parameters.AddWithValue("@FirstName", value.FirstName);
+                        command.Parameters.AddWithValue("@LastName", value.LastName);
+
                         command.Parameters.AddWithValue("@Username", value.Username);
                         command.Parameters.AddWithValue("@Pass", value.Pass);
                         command.Parameters.AddWithValue("@Email", value.Email);
@@ -186,20 +188,20 @@ namespace BooksTry.Controllers
 
                         int rowsAffected = command.ExecuteNonQuery();
 
-                        await PostOrder(GetPersonId());
+                        await PostOrder(GetUserId());
 
                         //return true;
                     }
                 }
             }
             //else
-                //return false;
+            //return false;
         }
 
         //[Route("{usernameValidation}")]
         public bool CheckUsernameValidation(string usernameValidation)
         {
-            string usernameValidationString = "SELECT * from PERSON WHERE username = @usernameV;";
+            string usernameValidationString = "SELECT * from USER WHERE username = @usernameV;";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -224,18 +226,19 @@ namespace BooksTry.Controllers
         }
 
         // Update user's full name and email
-        // PUT: api/Person/5 
+        // PUT: api/User/5 
         [HttpPut("{id}")]
-        public int Put(int id, [FromBody] Person value)
+        public int Put(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE PERSON SET FullName=@FullName, Email=@Email where PersonId = @id; ";
+            string updateString = "UPDATE USER SET FirstName=@FirstName,FirstName=@LastName, Email=@Email where UserId = @id; ";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 using (SqlCommand command = new SqlCommand(updateString, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@FullName", value.FullName);
+                    command.Parameters.AddWithValue("@FirstName", value.FirstName);
+                    command.Parameters.AddWithValue("@LastName", value.LastName);
                     command.Parameters.AddWithValue("@Email", value.Email);
                     int rowAffected = command.ExecuteNonQuery();
                     return rowAffected;
@@ -244,11 +247,11 @@ namespace BooksTry.Controllers
         }
 
         // Update user's password
-        // PUT: api/Person/5
+        // PUT: api/User/5
         [HttpPut("passChange/{id}")]
-        public int PutPass(int id, [FromBody] Person value)
+        public int PutPass(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE PERSON SET Pass=@Pass where PersonId = @id;";
+            string updateString = "UPDATE USER SET Pass=@Pass where UserId = @id;";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -263,17 +266,17 @@ namespace BooksTry.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("delAccount/{personId}")]
-        public int DeleteAccount(int personId)
+        [HttpDelete("delAccount/{userId}")]
+        public int DeleteAccount(int userId)
         {
             string deleteString =
-                "BEGIN TRANSACTION SET XACT_ABORT ON DELETE PERSONBOOK WHERE PersonId=@PersonId DELETE PERSON WHERE PersonId=@PersonId COMMIT TRANSACTION";
+                "BEGIN TRANSACTION SET XACT_ABORT ON DELETE USERBOOK WHERE UserId=@UserId DELETE USER WHERE UserId=@UserId COMMIT TRANSACTION";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 using (SqlCommand command = new SqlCommand(deleteString, conn))
                 {
-                    command.Parameters.AddWithValue("@PersonId", personId);
+                    command.Parameters.AddWithValue("@UserId", userId);
                     int rowAffected = command.ExecuteNonQuery();
                     return rowAffected;
                 }
@@ -281,16 +284,16 @@ namespace BooksTry.Controllers
         }
 
         [Route("login/{username}/{password}")]
-        public Person Login(string username, string password)
+        public User Login(string username, string password)
         {
             var collection = Get();
             if (collection != null)
             {
-                foreach (var person in collection)
+                foreach (var user in collection)
                 {
-                    if ((person.Username == username) && (person.Pass == password))
+                    if ((user.Username == username) && (user.Pass == password))
                     {
-                        return person;
+                        return user;
 
                     }
                 }
@@ -298,9 +301,9 @@ namespace BooksTry.Controllers
             return null;
         }
 
-        public int GetPersonId()
+        public int GetUserId()
         {
-            string selectString = "SELECT TOP 1 * FROM PERSON ORDER BY PersonId DESC";
+            string selectString = "SELECT TOP 1 * FROM USER ORDER BY UserId DESC";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -311,7 +314,7 @@ namespace BooksTry.Controllers
                         if (reader.HasRows)
                         {
                             reader.Read();
-                            return ReadItem(reader).PersonId;
+                            return ReadItem(reader).UserId;
                         }
                         else
                         {
@@ -322,16 +325,16 @@ namespace BooksTry.Controllers
             }
         }
 
-        public async Task<bool> PostOrder(int personId)
+        public async Task<bool> PostOrder(int userId)
         {
-            string inseartString = "INSERT INTO ORDERS (PersonId, TotalPrice, Paid) values(@personId, @totalPrice, @paid); ";
+            string inseartString = "INSERT INTO ORDERS (UserId, TotalPrice, Paid) values(@userId, @totalPrice, @paid); ";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 using (SqlCommand command = new SqlCommand(inseartString, conn))
                 {
-                    command.Parameters.AddWithValue("@personId", personId);
+                    command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@totalPrice", 0);
                     command.Parameters.AddWithValue("@paid", false);
 
