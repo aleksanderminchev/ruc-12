@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace BooksTry.Controllers
 {
@@ -27,12 +28,12 @@ namespace BooksTry.Controllers
                 "inner join dbo.BOOK as b " +
                 "on ob.BookId = b.BookId " +
                 "where o.Paid = 'false'; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<OrderedBooks> result = new List<OrderedBooks>();
                         while (reader.Read())
@@ -47,7 +48,7 @@ namespace BooksTry.Controllers
         }
 
         
-        private OrderedBooks ReadOrderedBook(SqlDataReader reader)
+        private OrderedBooks ReadOrderedBook(NpgsqlDataReader  reader)
         {
             int orderId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             decimal totalPrice = reader.IsDBNull(1)? 0 : reader.GetDecimal(1);
@@ -86,12 +87,12 @@ namespace BooksTry.Controllers
                 "on ob.BookId = b.BookId " +
                 "where o.Paid = 'false'and o.PersonId = '" + personId +
                 "'; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<OrderedBooks> result = new List<OrderedBooks>();
                         while (reader.Read())
@@ -117,12 +118,12 @@ namespace BooksTry.Controllers
                 "on ob.BookId = b.BookId " +
                 "where o.Paid = 'true'and o.OrdersId = '" + ordersId +
                 "'; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<OrderedBooks> result = new List<OrderedBooks>();
                         while (reader.Read())
@@ -147,12 +148,12 @@ namespace BooksTry.Controllers
                 "on ob.BookId = b.BookId " +
                 "where o.Paid = 'false'and o.PersonId = '" + personId +
                 "'; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<OrderedBooks> result = new List<OrderedBooks>();
                         while (reader.Read())
@@ -174,10 +175,10 @@ namespace BooksTry.Controllers
         {
             string inseartString = "INSERT INTO PERSONBOOK (PersonId, BookId) values(@personId, @bookId); ";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(inseartString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (inseartString, conn))
                 {
                     command.Parameters.AddWithValue("@personId", personId);
                     command.Parameters.AddWithValue("@bookId", bookId);

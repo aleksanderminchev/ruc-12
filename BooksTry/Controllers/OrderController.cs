@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace BooksTry.Controllers
 {
@@ -20,12 +21,12 @@ namespace BooksTry.Controllers
         public IEnumerable<Order> Get()
         {
             string selectString = "select * from ORDERS;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<Order> result = new List<Order>();
                         while (reader.Read())
@@ -44,12 +45,12 @@ namespace BooksTry.Controllers
         public IEnumerable<Order> GetAllPaidOrders()
         {
             string selectString = "select * from ORDERS where Paid = 'true';";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<Order> result = new List<Order>();
                         while (reader.Read())
@@ -69,12 +70,12 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from ORDERS where Paid = 'false'";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Order> result = new List<Order>();
                             while (reader.Read())
@@ -94,7 +95,7 @@ namespace BooksTry.Controllers
             }
         }
 
-        private Order ReadItem(SqlDataReader reader)
+        private Order ReadItem(NpgsqlDataReader  reader)
         {
             int ordersId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -125,13 +126,13 @@ namespace BooksTry.Controllers
         public IEnumerable<Order> GetOrderHistory(int personId)
         {
             string selectString = "select * from ORDERS where PersonId = @personId and Paid = 'true';";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
                     command.Parameters.AddWithValue("@personId", personId);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<Order> result = new List<Order>();
                         while (reader.Read())
@@ -153,13 +154,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from ORDERS where OrdersId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -189,13 +190,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select OrdersId from ORDERS where PersonId = @personId and Paid = 0";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@personId", personId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -224,10 +225,10 @@ namespace BooksTry.Controllers
         {
             string inseartString = "INSERT INTO ORDERS (PersonId, TotalPrice, Paid) values(@personId, @totalPrice, @paid); ";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(inseartString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (inseartString, conn))
                 {
                     command.Parameters.AddWithValue("@personId", value.PersonId);
                     command.Parameters.AddWithValue("@totalPrice", 0);
@@ -246,10 +247,10 @@ namespace BooksTry.Controllers
         {
             string updateString = "update ORDERS set Paid = @paid, PurchaseDate = @purchaseDate," +
                 " CardNumber = @cardNumber, ExpiryDate = @ExpiryDate, CVC = @cvc where OrdersId = @id; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(updateString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (updateString, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@paid", true);
@@ -279,10 +280,10 @@ namespace BooksTry.Controllers
                 bookPrice = value.TotalPrice;
             }
             string updateString = "update ORDERS set TotalPrice = (TotalPrice + (@totalPrice)) where OrdersId = @id;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(updateString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (updateString, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@totalPrice", bookPrice);

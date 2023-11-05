@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace BooksTry.Controllers
 {
@@ -20,12 +21,12 @@ namespace BooksTry.Controllers
         public IEnumerable<Review> Get()
         {
             string selectString = "select * from REVIEW;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<Review> result = new List<Review>();
                         while (reader.Read())
@@ -39,7 +40,7 @@ namespace BooksTry.Controllers
             }
         }
 
-        private Review ReadItem(SqlDataReader reader)
+        private Review ReadItem(NpgsqlDataReader  reader)
         {
             int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -66,13 +67,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from REVIEW where ReviewId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -99,10 +100,10 @@ namespace BooksTry.Controllers
         public bool Post([FromBody] Review value)
         {
             string insertString = "insert into REVIEW (PersonId, BookId, RText) values(@personId, @bookId, @rText);";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(insertString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (insertString, conn))
                 {
                     command.Parameters.AddWithValue("@personId", value.PersonId);
                     command.Parameters.AddWithValue("@bookId", value.BookId);

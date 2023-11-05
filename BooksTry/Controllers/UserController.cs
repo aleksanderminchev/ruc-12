@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-
+using Npgsql;
 namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
@@ -15,18 +14,19 @@ namespace BooksTry.Controllers
     public class UserController : ControllerBase
     {
         private string connectionString = ConnectionString.connectionString;
-
+        // System.Console.WriteLine("Connection");
+        // System.Console.WriteLine(connectionString);
         // GET: api/User
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            string selectString = "select * from USER;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            string selectString = "select * from USERS;";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         List<User> result = new List<User>();
                         while (reader.Read())
@@ -40,22 +40,23 @@ namespace BooksTry.Controllers
             }
         }
 
-        private User ReadItem(SqlDataReader reader)
+        private User ReadItem(NpgsqlDataReader reader)
         {
+            System.Console.WriteLine(reader.GetInt32(0));
+            System.Console.WriteLine(reader.GetString(1));
+            System.Console.WriteLine(reader.GetString(2));
             int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-            string firstName = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            string lastName = reader.IsDBNull(2) ? "" : reader.GetString(2);
-            string username = reader.IsDBNull(3) ? "" : reader.GetString(3);
-            string pass = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            string email = reader.IsDBNull(5) ? "" : reader.GetString(5);
-            bool isVerified = reader.IsDBNull(6) ? false : reader.GetBoolean(6);
+            string firstName = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            string lastName = reader.IsDBNull(5) ? "" : reader.GetString(5);
+            string pass = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            string email = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            bool isVerified = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
 
             User item = new User()
             {
                 UserId = userId,
                 FirstName = firstName,
                 LastName = lastName,
-                Username = username,
                 Pass = pass,
                 Email = email,
                 IsVerified = isVerified
@@ -70,14 +71,15 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from USER where UserId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                string selectString = "select * from USERS where user_id = @id";
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
+
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -104,13 +106,13 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from USER where UserType = 1";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                string selectString = "select * from USERS";
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<User> result = new List<User>();
                             while (reader.Read())
@@ -123,9 +125,10 @@ namespace BooksTry.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //future handling exceptions
+                System.Console.WriteLine(e);
                 return 0;
             }
         }
@@ -135,13 +138,13 @@ namespace BooksTry.Controllers
         {
             try
             {
-                string selectString = "select * from USER where UserType = 2";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                string selectString = "select * from USERS";
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<User> result = new List<User>();
                             while (reader.Read())
@@ -167,21 +170,20 @@ namespace BooksTry.Controllers
         {
 
             string insertString =
-                "INSERT INTO USER (FirstName,LastName, Username, Pass, Email, UserType) values(@FirstName,@LastName, @Username, @Pass, @Email, @type);";
-            bool item = CheckUsernameValidation(value.Username);
+                "INSERT INTO USER (FirstName,LastName, Pass, Email, UserType) values(@FirstName,@LastName, @Pass, @Email, @type);";
+            bool item = CheckUsernameValidation(value.Email);
 
             if (item == true)
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(insertString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(insertString, conn))
                     {
 
                         command.Parameters.AddWithValue("@FirstName", value.FirstName);
                         command.Parameters.AddWithValue("@LastName", value.LastName);
 
-                        command.Parameters.AddWithValue("@Username", value.Username);
                         command.Parameters.AddWithValue("@Pass", value.Pass);
                         command.Parameters.AddWithValue("@Email", value.Email);
                         command.Parameters.AddWithValue("@type", 1);
@@ -201,15 +203,15 @@ namespace BooksTry.Controllers
         //[Route("{usernameValidation}")]
         public bool CheckUsernameValidation(string usernameValidation)
         {
-            string usernameValidationString = "SELECT * from USER WHERE username = @usernameV;";
+            string usernameValidationString = "SELECT * from USERs WHERE email = @emailV;";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(usernameValidationString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(usernameValidationString, conn))
                 {
-                    command.Parameters.AddWithValue("@usernameV", usernameValidation);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    command.Parameters.AddWithValue("@email", usernameValidation);
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
@@ -230,11 +232,11 @@ namespace BooksTry.Controllers
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE USER SET FirstName=@FirstName,FirstName=@LastName, Email=@Email where UserId = @id; ";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            string updateString = "UPDATE USERS SET FirstName=@FirstName,FirstName=@LastName, Email=@Email where UserId = @id; ";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(updateString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(updateString, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@FirstName", value.FirstName);
@@ -251,11 +253,11 @@ namespace BooksTry.Controllers
         [HttpPut("passChange/{id}")]
         public int PutPass(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE USER SET Pass=@Pass where UserId = @id;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            string updateString = "UPDATE USERS SET Pass=@Pass where UserId = @id;";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(updateString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(updateString, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@Pass", value.Pass);
@@ -270,11 +272,11 @@ namespace BooksTry.Controllers
         public int DeleteAccount(int userId)
         {
             string deleteString =
-                "BEGIN TRANSACTION SET XACT_ABORT ON DELETE USERBOOK WHERE UserId=@UserId DELETE USER WHERE UserId=@UserId COMMIT TRANSACTION";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+                "BEGIN TRANSACTION SET XACT_ABORT ON DELETE USERBOOK WHERE UserId=@UserId DELETE USERS WHERE UserId=@UserId COMMIT TRANSACTION";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(deleteString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(deleteString, conn))
                 {
                     command.Parameters.AddWithValue("@UserId", userId);
                     int rowAffected = command.ExecuteNonQuery();
@@ -284,14 +286,14 @@ namespace BooksTry.Controllers
         }
 
         [Route("login/{username}/{password}")]
-        public User Login(string username, string password)
+        public User Login(string email, string password)
         {
             var collection = Get();
             if (collection != null)
             {
                 foreach (var user in collection)
                 {
-                    if ((user.Username == username) && (user.Pass == password))
+                    if ((user.Email == email) && (user.Pass == password))
                     {
                         return user;
 
@@ -303,13 +305,13 @@ namespace BooksTry.Controllers
 
         public int GetUserId()
         {
-            string selectString = "SELECT TOP 1 * FROM USER ORDER BY UserId DESC";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            string selectString = "SELECT TOP 1 * FROM USERS ORDER BY UserId DESC";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
@@ -329,10 +331,10 @@ namespace BooksTry.Controllers
         {
             string inseartString = "INSERT INTO ORDERS (UserId, TotalPrice, Paid) values(@userId, @totalPrice, @paid); ";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(inseartString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(inseartString, conn))
                 {
                     command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@totalPrice", 0);

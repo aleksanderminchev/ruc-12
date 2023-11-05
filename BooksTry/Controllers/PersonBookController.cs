@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace BooksTry.Controllers
 {
@@ -20,12 +21,12 @@ namespace BooksTry.Controllers
         public IEnumerable<PersonBook> Get()
         {
             string selectString = "select * from PERSONBOOK;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<PersonBook> result = new List<PersonBook>();
                         while (reader.Read())
@@ -39,7 +40,7 @@ namespace BooksTry.Controllers
             }
         }
 
-        private PersonBook ReadItem(SqlDataReader reader)
+        private PersonBook ReadItem(NpgsqlDataReader  reader)
         {
             int pBId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -62,13 +63,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from PERSONBOOK where PBId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -90,7 +91,7 @@ namespace BooksTry.Controllers
             }
         }
 
-        private Bookshelf ReadBookshelf(SqlDataReader reader)
+        private Bookshelf ReadBookshelf(NpgsqlDataReader  reader)
         {
             int personId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int bookId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -121,13 +122,13 @@ namespace BooksTry.Controllers
                     "inner join BOOK as b " +
                     "on pb.BookId = b.BookId " +
                     "where pb.PersonId = @personId";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@personId", personId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Bookshelf> result = new List<Bookshelf>();
                             while (reader.Read())
@@ -154,10 +155,10 @@ namespace BooksTry.Controllers
             {
                 string inseartString = "INSERT INTO PERSONBOOK (PersonId, BookId) values(@personId, @bookId); ";
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(inseartString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (inseartString, conn))
                     {
                         command.Parameters.AddWithValue("@personId", value.PersonId);
                         command.Parameters.AddWithValue("@bookId", value.BookId);

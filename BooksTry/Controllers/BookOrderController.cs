@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace BooksTry.Controllers
 {
@@ -20,12 +21,12 @@ namespace BooksTry.Controllers
         public IEnumerable<BookOrder> Get()
         {
             string selectString = "select * from ORDERBOOK;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<BookOrder> result = new List<BookOrder>();
                         while (reader.Read())
@@ -39,7 +40,7 @@ namespace BooksTry.Controllers
             }
         }
 
-        private BookOrder ReadItem(SqlDataReader reader)
+        private BookOrder ReadItem(NpgsqlDataReader  reader)
         {
             int boId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int orderId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -62,13 +63,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from ORDERBOOK where OBId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -96,10 +97,10 @@ namespace BooksTry.Controllers
         {
             string inseartString = "INSERT INTO ORDERBOOK (OrdersId, BookId) values(@ordersId, @bookId); ";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(inseartString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (inseartString, conn))
                 {
                     command.Parameters.AddWithValue("@ordersId", value.OrderId);
                     command.Parameters.AddWithValue("@bookId", value.Bookid);
@@ -122,10 +123,10 @@ namespace BooksTry.Controllers
         {
             string deleteString = "delete from ORDERBOOK where BookId = @bookId and OrdersId = @orderId";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(deleteString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (deleteString, conn))
                 {
                     command.Parameters.AddWithValue("@bookId", bookId);
                     command.Parameters.AddWithValue("@orderId", orderId);

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+
 namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
@@ -14,7 +16,7 @@ namespace BooksTry.Controllers
     {
         private string connectionString = ConnectionString.connectionString;
 
-        private Title ReadItem(SqlDataReader reader)
+        private Title ReadItem(NpgsqlDataReader  reader)
         {
             string titleId = reader.IsDBNull(0) ? "" : reader.GetString(0);
             string primaryTitle = reader.IsDBNull(1) ? "" : reader.GetString(1);
@@ -58,12 +60,12 @@ namespace BooksTry.Controllers
         public IEnumerable<Title> Get()
         {
             string selectString = "select * from TITLE;";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand(selectString, conn))
+                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (NpgsqlDataReader  reader = command.ExecuteReader())
                     {
                         List<Title> result = new List<Title>();
                         while (reader.Read())
@@ -85,13 +87,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from TITLE where TitleId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -122,13 +124,13 @@ namespace BooksTry.Controllers
             {
                 //string selectString = "select * from TITLE where genre LIKE @genre";
                 string selectString = "SELECT TOP 6 * FROM TITLE WHERE Price = '0';";     //here i changed
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@price", price);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -156,12 +158,12 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "SELECT TOP 6 * FROM dbo.TITLE WHERE Genre LIKE 'Fantasy';";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -189,12 +191,12 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "SELECT TOP 5 * FROM dbo.TITLE ORDER BY NEWID();";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -222,13 +224,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from TITLE where genre LIKE @genre";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@genre", genre);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -256,14 +258,14 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from dbo.TITLE as b where b.Title LIKE @title or b.Author LIKE @author";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@title", name);
                         command.Parameters.AddWithValue("@author", name);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -303,7 +305,7 @@ namespace BooksTry.Controllers
 
 
         // Title review's
-        private Review ReadReview(SqlDataReader reader)
+        private Review ReadReview(NpgsqlDataReader  reader)
         {
             int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
@@ -331,13 +333,13 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select r.*, p.Username, p.UserPhoto from dbo.REVIEW as r inner join dbo.PERSON as p on r.PersonId = p.PersonId where TitleId = @id";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", titleId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Review> result = new List<Review>();
                             while (reader.Read())
@@ -364,12 +366,12 @@ namespace BooksTry.Controllers
             {
                 string selectString = "select * from TITLE where Price = '0'";
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -394,12 +396,12 @@ namespace BooksTry.Controllers
             try
             {
                 string selectString = "select * from TITLE where Price != '0'";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (SqlCommand command = new SqlCommand(selectString, conn))
+                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader  reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
