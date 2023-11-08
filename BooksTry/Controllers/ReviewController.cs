@@ -42,20 +42,21 @@ namespace BooksTry.Controllers
 
         private Review ReadItem(NpgsqlDataReader  reader)
         {
+            System.Console.WriteLine(reader.GetChar(5));
             int id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int userId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-            int titleId = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
-            int value = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-            string comment = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            string createdAt = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            char titleId = reader.IsDBNull(5) ? '0' : reader.GetChar(5);
+            int value = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+            string comment = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            DateTime createdAt = reader.IsDBNull(4) ? new DateTime() : reader.GetDateTime(4);
 
             Review item = new Review()
             {
-                Id = id,
+                ReviewId = id,
                 UserId = userId,
                 TitleId = titleId,
-                Value - value,
-                Comment = comment,
+                RText = comment,
+                RRating = value,
                 CreatedAt = createdAt
             };
 
@@ -107,8 +108,8 @@ namespace BooksTry.Controllers
                 conn.Open();
                 using (NpgsqlCommand  command = new NpgsqlCommand (insertString, conn))
                 {
-                    command.Parameters.AddWithValue("@userId", value.PersonId);
-                    command.Parameters.AddWithValue("@titleId", value.BookId);
+                    command.Parameters.AddWithValue("@userId", value.UserId);
+                    command.Parameters.AddWithValue("@titleId", value.TitleId);
                     command.Parameters.AddWithValue("@comment", value.RText);
 
                     int rowsAffected = command.ExecuteNonQuery();

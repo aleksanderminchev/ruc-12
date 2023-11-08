@@ -12,7 +12,7 @@ namespace BooksTry.Models
         public string CreatedAt { get; set; }
         public string SearchText { get; set; }
 
-        public Search(int id, int userId, string createdAt, string searchText)
+        public Search(int searchId, int userId, string createdAt, string searchText)
         {
             SearchId = searchId;
             UserId = userId;

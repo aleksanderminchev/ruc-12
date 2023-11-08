@@ -14,7 +14,7 @@ namespace BooksTry.Models
         public string Profession { get; set; }
         public string KnownMovies { get; set; }
 
-        public CastMember(int nCost, string fullName, string birthYear, string deathYear, string profession, string knownMovies)
+        public CastMember(string nCost, string fullName, string birthYear, string deathYear, string profession, string knownMovies)
         {
             NCost = nCost;
             FullName = fullName;

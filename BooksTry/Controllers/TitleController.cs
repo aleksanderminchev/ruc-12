@@ -16,7 +16,7 @@ namespace BooksTry.Controllers
     {
         private string connectionString = ConnectionString.connectionString;
 
-        private Title ReadItem(NpgsqlDataReader  reader)
+        private Title ReadItem(NpgsqlDataReader reader)
         {
             string titleId = reader.IsDBNull(0) ? "" : reader.GetString(0);
             string primaryTitle = reader.IsDBNull(1) ? "" : reader.GetString(1);
@@ -63,9 +63,9 @@ namespace BooksTry.Controllers
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                 {
-                    using (NpgsqlDataReader  reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         List<Title> result = new List<Title>();
                         while (reader.Read())
@@ -90,10 +90,10 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -127,10 +127,10 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@price", price);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -161,9 +161,9 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -194,9 +194,9 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -227,10 +227,10 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@genre", genre);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -261,11 +261,11 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@title", name);
                         command.Parameters.AddWithValue("@author", name);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -305,20 +305,21 @@ namespace BooksTry.Controllers
 
 
         // Title review's
-        private Review ReadReview(NpgsqlDataReader  reader)
+        private Review ReadReview(NpgsqlDataReader reader)
         {
+            System.Console.WriteLine(reader.GetChar(5));
             int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-            int bookId = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
-            int rating = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-            string rText = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            char titleId = reader.IsDBNull(5) ? '0' : reader.GetChar(5);
+            int rating = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+            string rText = reader.IsDBNull(3) ? "" : reader.GetString(3);
 
             Review item = new Review()
             {
                 ReviewId = reviewId,
-                PersonId = personId,
-                BookId = bookId,
-                Rating = rating,
+                UserId = personId,
+                TitleId = titleId,
+                RRating = rating,
                 RText = rText,
             };
 
@@ -336,10 +337,10 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", titleId);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Review> result = new List<Review>();
                             while (reader.Read())
@@ -369,9 +370,9 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())
@@ -399,9 +400,9 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
                             while (reader.Read())

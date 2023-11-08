@@ -8,23 +8,25 @@ namespace BooksTry.Models
     public class Review
     {
         public int ReviewId { get; set; }
-        public int PersonId { get; set; }
-        public int BookId { get; set; }
-        public int Rating { get; set; }
+        public int UserId { get; set; }
+        public char TitleId { get; set; }
+        public int RRating { get; set; }
         public string RText { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public Review()
         {
 
         }
 
-        public Review(int reviewId, int personId, int bookId, int rating, string rText)
+        public Review(int reviewId, int userId, char titleId, int rating, string rText, DateTime createdAt)
         {
             ReviewId = reviewId;
-            PersonId = personId;
-            BookId = bookId;
-            Rating = rating;
+            UserId = userId;
+            TitleId = titleId;
+            RRating = rating;
             RText = rText;
+            CreatedAt= createdAt;
         }
     }
 }
