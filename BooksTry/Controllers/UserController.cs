@@ -7,6 +7,7 @@ using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using System.Text;
 namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
@@ -42,9 +43,6 @@ namespace BooksTry.Controllers
 
         private User ReadItem(NpgsqlDataReader reader)
         {
-            System.Console.WriteLine(reader.GetInt32(0));
-            System.Console.WriteLine(reader.GetString(1));
-            System.Console.WriteLine(reader.GetString(2));
             int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             string firstName = reader.IsDBNull(4) ? "" : reader.GetString(4);
             string lastName = reader.IsDBNull(5) ? "" : reader.GetString(5);
@@ -285,24 +283,104 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("login/{username}/{password}")]
-        public User Login(string email, string password)
+        [HttpPost("login")]
+        public ActionResult<object> Login()
         {
-            var collection = Get();
-            if (collection != null)
+            try
             {
-                foreach (var user in collection)
-                {
-                    if ((user.Email == email) && (user.Pass == password))
-                    {
-                        return user;
+                // Get the Authorization header from the request
+                string authorizationHeader = Request.Headers["Authorization"];
 
+                if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Basic "))
+                {
+                    // Extract and decode the base64-encoded credentials
+                    string credentialsBase64 = authorizationHeader.Substring("Basic ".Length).Trim();
+                    string credentials = Encoding.UTF8.GetString(Convert.FromBase64String(credentialsBase64));
+
+                    // Split the credentials into email and password
+                    string[] credentialParts = credentials.Split(':');
+
+                    if (credentialParts.Length == 2)
+                    {
+                        string email = credentialParts[0];
+                        string password = credentialParts[1];
+
+                        User user = GetUserEmail(email);
+
+                        if (user != null && ComparePasswords(user, password))
+                        {
+                            // Authentication successful
+                            return user;
+                        }
+                    }
+                }
+
+                // If the credentials are invalid or missing, return an error response
+                return Unauthorized("Invalid credentials");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        public User GetUserEmail(string email)
+        {
+            string selectString = "SELECT * FROM USERS Where Email=@Email DESC";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        command.Parameters.AddWithValue("@Email", email);
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            return ReadItem(reader);
+                        }
+                        else
+                        {
+                            throw new Exception("No user found with this email address");
+                        }
                     }
                 }
             }
-            return null;
         }
+        public bool ComparePasswords(User user, string password)
+        {
+            string encryptPasswordString = "Select crypt(@password, gen_salt('bf'))";
+            string passwordCheckEncrypted = "";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(encryptPasswordString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        command.Parameters.AddWithValue("@password", password);
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            passwordCheckEncrypted = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                        }
+                        else
+                        {
+                            throw new Exception("No user found with this email address");
+                        }
+                    }
+                }
+                if (passwordCheckEncrypted == user.Pass)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
+        }
         public int GetUserId()
         {
             string selectString = "SELECT TOP 1 * FROM USERS ORDER BY UserId DESC";
