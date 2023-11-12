@@ -31,7 +31,7 @@ namespace BooksTry
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API Name", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API Name V1", Version = "v1" });
             });
 
         }
@@ -55,7 +55,7 @@ namespace BooksTry
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/openai.json", "v1");
+                options.SwaggerEndpoint("openai.json", "Your API Name V1");
             });
             // app.UseEndpoints(endpoints =>
             // {
