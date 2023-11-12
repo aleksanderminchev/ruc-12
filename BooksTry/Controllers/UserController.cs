@@ -42,9 +42,6 @@ namespace BooksTry.Controllers
 
         private User ReadItem(NpgsqlDataReader reader)
         {
-            System.Console.WriteLine(reader.GetInt32(0));
-            System.Console.WriteLine(reader.GetString(1));
-            System.Console.WriteLine(reader.GetString(2));
             int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             string firstName = reader.IsDBNull(4) ? "" : reader.GetString(4);
             string lastName = reader.IsDBNull(5) ? "" : reader.GetString(5);
@@ -286,23 +283,95 @@ namespace BooksTry.Controllers
         }
 
         [Route("login/{username}/{password}")]
-        public User Login(string email, string password)
+        public ActionResult<object> Login(string email, string password)
         {
-            var collection = Get();
-            if (collection != null)
+            try
             {
-                foreach (var user in collection)
+                User collection = GetUserEmail(email);
+                if (collection != null)
                 {
-                    if ((user.Email == email) && (user.Pass == password))
+                    if (ComparePasswords(collection, password))
                     {
-                        return user;
+                        return collection;
+                    }
+                    else
+                    {
+                        return NotFound("User not found or invalid credentials");
+                    }
 
+                }
+                else
+                {
+                    // You might want to return a more specific response for failed login attempts
+                    return NotFound("User not found or invalid credentials");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+
+
+            }
+        }
+
+        public User GetUserEmail(string email)
+        {
+            string selectString = "SELECT * FROM USERS Where Email=@Email DESC";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        command.Parameters.AddWithValue("@Email", email);
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            return ReadItem(reader);
+                        }
+                        else
+                        {
+                            throw new Exception("No user found with this email address");
+                        }
                     }
                 }
             }
-            return null;
         }
+        public bool ComparePasswords(User user, string password)
+        {
+            string encryptPasswordString = "Select crypt(@password, gen_salt('bf'))";
+            string passwordCheckEncrypted = "";
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(encryptPasswordString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        command.Parameters.AddWithValue("@password", password);
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            passwordCheckEncrypted = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                        }
+                        else
+                        {
+                            throw new Exception("No user found with this email address");
+                        }
+                    }
+                }
+                if (passwordCheckEncrypted == user.Pass)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
+        }
         public int GetUserId()
         {
             string selectString = "SELECT TOP 1 * FROM USERS ORDER BY UserId DESC";
