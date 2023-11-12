@@ -7,6 +7,7 @@ using BooksTry.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using System.Text;
 namespace BooksTry.Controllers
 {
     [Route("api/[controller]")]
@@ -282,38 +283,46 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("login/{username}/{password}")]
-        public ActionResult<object> Login(string email, string password)
+        [HttpPost("login")]
+        public ActionResult<object> Login()
         {
             try
             {
-                User collection = GetUserEmail(email);
-                if (collection != null)
-                {
-                    if (ComparePasswords(collection, password))
-                    {
-                        return collection;
-                    }
-                    else
-                    {
-                        return NotFound("User not found or invalid credentials");
-                    }
+                // Get the Authorization header from the request
+                string authorizationHeader = Request.Headers["Authorization"];
 
-                }
-                else
+                if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Basic "))
                 {
-                    // You might want to return a more specific response for failed login attempts
-                    return NotFound("User not found or invalid credentials");
+                    // Extract and decode the base64-encoded credentials
+                    string credentialsBase64 = authorizationHeader.Substring("Basic ".Length).Trim();
+                    string credentials = Encoding.UTF8.GetString(Convert.FromBase64String(credentialsBase64));
+
+                    // Split the credentials into email and password
+                    string[] credentialParts = credentials.Split(':');
+
+                    if (credentialParts.Length == 2)
+                    {
+                        string email = credentialParts[0];
+                        string password = credentialParts[1];
+
+                        User user = GetUserEmail(email);
+
+                        if (user != null && ComparePasswords(user, password))
+                        {
+                            // Authentication successful
+                            return user;
+                        }
+                    }
                 }
+
+                // If the credentials are invalid or missing, return an error response
+                return Unauthorized("Invalid credentials");
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
-
-
             }
         }
-
         public User GetUserEmail(string email)
         {
             string selectString = "SELECT * FROM USERS Where Email=@Email DESC";
