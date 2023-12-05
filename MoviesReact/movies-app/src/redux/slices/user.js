@@ -1,6 +1,6 @@
-import { createSlice, Dispatch } from '@reduxjs/toolkit';
+import { createSlice, Dispatch } from "@reduxjs/toolkit";
 
-import axios from '../../utils/axios';
+import axios from "../../utils/axios";
 
 const initialState = {
   isLoading: false,
@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'customer',
+  name: "customer",
   initialState,
   reducers: {
     // START LOADING
@@ -45,15 +45,15 @@ const slice = createSlice({
 export default slice.reducer;
 
 export function getUsers() {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/users');
+      const response = await axios.get("/api/users");
       dispatch(slice.actions.getUsersSuccess(response.data));
       return true;
     } catch (error) {
       console.log(error);
-      let errorMessage = '';
+      let errorMessage = "";
       if (error?.errors?.json._schema) {
         errorMessage = error?.errors?.json._schema[0];
       } else if (error?.errors?.json) {
@@ -67,19 +67,19 @@ export function getUsers() {
   };
 }
 export function getUser(id) {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await axios.get(`/api/users/${id}`);
       if (response.status === 404) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       } else {
         dispatch(slice.actions.getUserSuccess(response));
         return true;
       }
     } catch (error) {
       console.log(error);
-      let errorMessage = '';
+      let errorMessage = "";
       if (error?.errors?.json._schema) {
         errorMessage = error?.errors?.json._schema[0];
       } else if (error?.errors?.json) {
@@ -93,13 +93,13 @@ export function getUser(id) {
   };
 }
 
-export function editUser(form: Partial<IUserAccountChangePassword>) {
+export function editUser(form) {
   const data_to_update_user = {
     password: form.confirmNewPassword,
     old_password: form.oldPassword,
   };
 
-  return async (dispatch: Dispatch): Promise<boolean> => {
+  return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       // Note that user is determined on their current Token, so only the logged in user can change their own data.
@@ -110,7 +110,7 @@ export function editUser(form: Partial<IUserAccountChangePassword>) {
       return true; // Return true on success
     } catch (error) {
       // console.log(error);
-      let errorMessage = '';
+      let errorMessage = "";
       if (error?.errors?.json._schema) {
         errorMessage = error?.errors?.json._schema[0];
       } else {
@@ -122,15 +122,15 @@ export function editUser(form: Partial<IUserAccountChangePassword>) {
   };
 }
 
-export function resendEmailVerification(email: string) {
-  return async (dispatch: Dispatch) => {
+export function resendEmailVerification(email) {
+  return async (dispatch) => {
     try {
       // console.log(localStorage.getItem('accessToken'));
       const response = await axios.post(
-        '/api/resendEmail',
+        "/api/resendEmail",
         { email: email },
         {
-          headers: { 'Admin-Recaptch-Overwride': true },
+          headers: { "Admin-Recaptch-Overwride": true },
           withCredentials: true,
         }
       );
@@ -141,7 +141,7 @@ export function resendEmailVerification(email: string) {
       }
     } catch (error) {
       console.log(error);
-      let errorMessage = '';
+      let errorMessage = "";
       if (error?.errors?.json._schema) {
         errorMessage = error?.errors?.json._schema[0];
       } else if (error?.errors?.json) {
