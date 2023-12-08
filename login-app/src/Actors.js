@@ -9,7 +9,7 @@ function Actors() {
       <Navbar />
 
       <div className="template d-flex flex-column align-items-center" style={{ minHeight: '100vh', backgroundColor: '#black', color: 'white' }}>
-        <div className="card mb-3 d-flex mt-4" style={{ maxWidth: '750px', width: '100%' }}>
+        <div className="card mb-3 d-flex mt-5" style={{ maxWidth: '1050px', width: '100%' }}>
           <div className="row g-0">
             <div className="col-md-6">
               <img
@@ -22,12 +22,10 @@ function Actors() {
             <div className="col-md-6">
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '40px', color: 'black', fontFamily: 'Trajan Pro, serif' }}>Matthew McConaughey</h5>
-                <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Georgia, serif' }}>
+                <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Poppins' }}>
                   Matthew David McConaughey was born November 4, 1969, is an American actor.
                   He had his breakout role with a supporting performance in the coming-of-age comedy Dazed and Confused (1993).
                   After a number of supporting roles, his first success as a leading man came in the legal drama A Time to Kill (1996).
-                  His career progressed with lead roles in the science fiction film Contact (1997), the historical drama Amistad (1997),
-                  and the war film U-571 (2000).
                 </p>
                 <Link to="#" className="btn btn-primary float-end mt-3" style={{ fontSize: '18px' }}>Read More</Link>
               </div>
@@ -35,7 +33,7 @@ function Actors() {
           </div>
         </div>
 
-        <div className="card mb-3 d-flex mt-4" style={{ maxWidth: '750px', width: '100%' }}>
+        <div className="card mb-3 d-flex mt-5" style={{ maxWidth: '1050px', width: '100%' }}>
           <div className="row g-0">
             <div className="col-md-6">
               <img
@@ -48,11 +46,10 @@ function Actors() {
             <div className="col-md-6">
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '40px', color: 'black', fontFamily: 'Trajan Pro, serif' }}>John Travolta</h5>
-                <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Georgia, serif' }}>
+                <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Poppins' }}>
                   John Joseph Travolta (born February 18, 1954) is an American actor. He became prominent during the 1970s, appearing on the television
                   sitcom Welcome Back, Kotter (1975–1979) and starring in the box office successes Carrie (1976), Saturday Night Fever (1977), Grease (1978),
-                  and Urban Cowboy (1980). His acting career declined throughout the 1980s, but he enjoyed a resurgence in the 1990s with his role in
-                  Pulp Fiction (1994).
+                  and Urban Cowboy (1980). 
                 </p>
                 <Link to="#" className="btn btn-primary float-end mt-3" style={{ fontSize: '18px' }}>Read More</Link>
               </div>
@@ -60,7 +57,7 @@ function Actors() {
           </div>
         </div>
 
-        <div className="card mb-3 d-flex mt-4" style={{ maxWidth: '750px', width: '100%' }}>
+        <div className="card mb-3 d-flex mt-5" style={{ maxWidth: '1050px', width: '100%' }}>
           <div className="row g-0">
             <div className="col-md-6">
               <img
@@ -73,11 +70,10 @@ function Actors() {
             <div className="col-md-6">
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '40px', color: 'black', fontFamily: 'Trajan Pro, serif' }}>Jamie Foxx</h5>
-                <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Georgia, serif' }}>
+              <p className="card-text" style={{ fontSize: '20px', fontFamily: 'Poppins' }}>
                   Eric Marlon Bishop (born December 13, 1967), known professionally as Jamie Foxx, is an American actor, comedian, and singer.
                   He received acclaim for his portrayal of Ray Charles in the film Ray (2004), winning the Academy Award, BAFTA, Screen Actors Guild Award,
-                  and Golden Globe Award for Best Actor. That same year, he was nominated for the Academy Award for Best Supporting Actor for his role in the
-                  crime film Collateral.
+                  and Golden Globe Award for Best Actor.
                 </p>
                 <Link to="#" className="btn btn-primary float-end mt-3" style={{ fontSize: '18px' }}>Read More</Link>
               </div>
