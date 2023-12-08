@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Trajan+Pro&display=swap');
+/* Add this line to import Georgia font */
+@import url('https://fonts.googleapis.com/css?family=Georgia&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    'Trajan Pro', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
