@@ -27,9 +27,9 @@ const slice = createSlice({
       state.error = action.payload; // if you only write action.payload, you do not dot-in to the actual data, where all data for customer is
     },
     // GET Users
-    getUsersSuccess(state, action) {
+    getMoviesSuccess(state, action) {
       state.isLoading = false;
-      state.users = action.payload.data;
+      state.movies = action.payload.data;
     },
     // GET User
     getUserSuccess(state, action) {
@@ -46,12 +46,15 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export function getUsers() {
-  return async (dispatch: Dispatch) => {
+export function getMovies(pageNumber) {
+  return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/api/users");
-      dispatch(slice.actions.getUsersSuccess(response.data));
+      const response = await axios.get(`/api/title?page=${pageNumber}`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getMoviesSuccess(response));
       return true;
     } catch (error) {
       console.log(error);

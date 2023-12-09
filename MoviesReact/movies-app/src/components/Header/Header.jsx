@@ -23,7 +23,7 @@ function Header() {
         <Button color="inherit" component={Link} to="/movies">
           Movies
         </Button>
-        <Button color="inherit" component={Link} to="/actor">
+        <Button color="inherit" component={Link} to="/actors">
           Actors
         </Button>
         <TextField

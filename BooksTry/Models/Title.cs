@@ -13,8 +13,6 @@ namespace BooksTry.Models
         public string PrimaryTitle { get; set; }
         public string OriginalTitle { get; set; }
         public char TitleType { get; set; }
-        public string Author { get; set; }
-        public string TitleDes { get; set; }
         public string Genres { get; set; }
         public bool IsAdult { get; set; }
         public char StartYear { get; set; }
@@ -37,7 +35,6 @@ namespace BooksTry.Models
 
         public Title(string titleId, string primaryTitle,
          string originalTitle, char titleType,
-         string author, string titleDes,
           string genres,
           bool isAdult,
           char startYear, char endYear,
@@ -47,8 +44,6 @@ namespace BooksTry.Models
             PrimaryTitle = primaryTitle;
             OriginalTitle = originalTitle;
             TitleType = titleType;
-            Author = author;
-            TitleDes = titleDes;
             Genres = genres;
             IsAdult = isAdult;
             StartYear = startYear;

@@ -19,19 +19,22 @@ namespace BooksTry.Controllers
         private Title ReadItem(NpgsqlDataReader reader)
         {
             string titleId = reader.IsDBNull(0) ? "" : reader.GetString(0);
-            string primaryTitle = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            string originalTitle = reader.IsDBNull(2) ? "" : reader.GetString(2);
-            char titleType = reader.IsDBNull(3) ? '\0' : reader.GetChar(3);
-            string author = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            string titleDes = reader.IsDBNull(5) ? "" : reader.GetString(5);
-            string genres = reader.IsDBNull(6) ? "" : reader.GetString(6);
-            bool isAdult = reader.IsDBNull(7) ? false : reader.GetBoolean(7);
-            char startYear = reader.IsDBNull(8) ? '\0' : reader.GetChar(8);
-            char endYear = reader.IsDBNull(9) ? '\0' : reader.GetChar(9);
-            int runTimeInMinutes = reader.IsDBNull(10) ? 0 : reader.GetInt32(10);
-            string parentId = reader.IsDBNull(11) ? "" : reader.GetString(11);
-            string plot = reader.IsDBNull(12) ? "" : reader.GetString(12);
-            string poster = reader.IsDBNull(13) ? "" : reader.GetString(13);
+            char titleType = reader.IsDBNull(1) ? '\0' : reader.GetChar(1);
+            string primaryTitle = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            string originalTitle = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            bool isAdult = reader.IsDBNull(3) ? false : reader.GetBoolean(4);
+            char startYear = reader.IsDBNull(5) ? '\0' : reader.GetChar(5);
+            char endYear = reader.IsDBNull(6) ? '\0' : reader.GetChar(6);
+            int runTimeInMinutes = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
+            string genres = reader.IsDBNull(8) ? "" : reader.GetString(8);
+            string parentId = reader.IsDBNull(9) ? "" : reader.GetString(9);
+            string plot = reader.IsDBNull(10) ? "" : reader.GetString(10);
+            string poster = reader.IsDBNull(11) ? "" : reader.GetString(11);
+            int seasonNumber = reader.IsDBNull(12) ? 0 : reader.GetInt32(12);
+            int seasonEpisode = reader.IsDBNull(13) ? 0 : reader.GetInt32(13);
+            int numberOfVotes = reader.IsDBNull(14) ? 0 : reader.GetInt32(14);
+            int averageRating = reader.IsDBNull(15) ? 0 : reader.GetInt32(15);
+
 
             Title item = new Title()
             {
@@ -39,8 +42,6 @@ namespace BooksTry.Controllers
                 PrimaryTitle = primaryTitle,
                 OriginalTitle = originalTitle,
                 TitleType = titleType,
-                Author = author,
-                TitleDes = titleDes,
                 Genres = genres,
                 IsAdult = isAdult,
                 StartYear = startYear,
@@ -48,18 +49,23 @@ namespace BooksTry.Controllers
                 RunTimeInMinutes = runTimeInMinutes,
                 ParentId = parentId,
                 Plot = plot,
-                Poster = poster
+                Poster = poster,
+                SeasonNumber = seasonNumber,
+                SeasonEpisode = seasonEpisode,
+                NumberOfVotes = numberOfVotes,
+                AverageRating = averageRating
             };
 
             return item;
         }
 
-
-        // GET: api/Title
+        // GET ALL Paginated
         [HttpGet]
-        public IEnumerable<Title> Get()
+        public List<Title> Get(int page = 1, int pageSize = 30)
         {
-            string selectString = "select * from TITLE;";
+            int offset = (page - 1) * pageSize;
+            string selectString = $"SELECT * FROM TITLE OFFSET {offset} LIMIT {pageSize};";
+
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();

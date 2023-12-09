@@ -3,16 +3,9 @@ import React from "react";
 import Navbar from "./Navbar"; // Adjust the path based on your project structure
 
 function Update() {
-    const isLoggedIn = true; // Replace with your actual authentication logic
-
-    const handleLogout = () => {
-        // Implement your logout logic here
-        console.log("Logged out");
-    };
 
     return (
         <div className="update">
-            <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
             <div className="template d-flex justify-content-center align-items-center vh-100 bg-primary navbar navbar-expand-lg navbar-light bg-dark">
                 <div className="form_container p-5 rounded bg-white" style={{ width: '550px', padding: '30px', margin: '20px' }}>
                     <form>

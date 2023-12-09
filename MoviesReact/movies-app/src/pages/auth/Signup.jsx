@@ -1,12 +1,10 @@
 // Signup.js
 import React from "react";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
 
 function Signup() {
     return (
         <div className="signup">
-            <Navbar />
             <div className="template d-flex justify-content-center align-items-center vh-100 bg-primary bg-primary navbar navbar-expand-lg navbar-light bg-dark">
                 <div className="form_container p-5 rounded bg-white" style={{ width: '550px', padding: '30px', margin: '20px' }}>
                     <form>
