@@ -1,28 +1,35 @@
 // homeloggedin.js
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar"; // Adjust the path based on your project structure
+import { FaStar } from 'react-icons/fa';
+import StarRating from './StarRating';
 
-function HomeLoggedIn() {
-  return (
-    <div className="homeloggedin" style={{ minHeight: '100vh', backgroundColor: 'black', color: 'white', overflowX: 'hidden' }}>
-      <Navbar isLoggedIn={true} onLogout={() => console.log("Logout")} /> {/* Replace console.log with your logout logic */}
-      <div className="container mt-4">
-        {/* Row 1: Newest Movies */}
-        <div className="row mb-5">
-          <h2 style={{fontSize: '40px', color: '#FFD700', fontWeight: 'bold'}}>Newest Movies</h2>
-          {/* Movie 1 */}
-          <div className="col-md-2">
-            <div className="card">
-              <img
-                src="https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-                className="card-img-top"
-                alt="Movie Poster"
-              />
-              <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Oppenheimer</h5>
-              </div>
+function Reviews() {
+  const [userRating, setUserRating] = useState(0);
+  const dummyFunction = () => {};
+    return (
+        <div className="reviews" style={{ minHeight: '100vh', backgroundColor: 'black', color: 'white', overflowX: 'hidden' }}>
+          <Navbar isLoggedIn={true} onLogout={() => console.log("Logout")} /> {/* Replace console.log with your logout logic */}
+          <div className="container mt-4">
+            {/* Row 1: Newest Movies */}
+            <div className="row mb-4">
+              <h2 style={{ fontSize: '40px', color: '#FFD700', fontWeight: 'bold' }}>My Reviews</h2>
+              {/* Movie 1 */}
+              <div className="col-md-2">
+                <div className="card">
+                  <img
+                    src="https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
+                    className="card-img-top"
+                    alt="Movie Poster"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Oppenheimer</h5>
+                      <div className="mb-2">
+                        <StarRating onRate={dummyFunction} />
+                      </div>
+                  </div>
+                </div>
             </div>
-          </div>
           {/* Movie 2 */}
           <div className="col-md-2">
             <div className="card">
@@ -33,6 +40,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Barbie</h5>
+                 <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                </div>
               </div>
             </div>
           </div>
@@ -46,6 +56,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
               <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Indiana Jones</h5>
+                 <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -59,6 +72,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
               <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Napoleon</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} /> 
+                 </div>
               </div>
             </div>
           </div>
@@ -72,6 +88,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
               <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Spider-man</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -85,15 +104,16 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Scream VI</h5>
-              </div>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                  </div>
             </div>
           </div>
         </div>
 
-          {/* Row 1: Top 10 */}
-          <div className="row mb-5">
-            <h2 style={{fontSize: '40px', color: '#FFD700', fontWeight: 'bold'}}>Top 10</h2>
-          {/* Movie 1 */}
+        <div className="container mt-4">
+          {/* Row 2*/}
+          <div className="row mt-4">
           <div className="col-md-2">
             <div className="card">
               <img
@@ -103,6 +123,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Godfather</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -116,6 +139,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Pulp Fiction</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                  </div>
               </div>
             </div>
           </div>
@@ -129,6 +155,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Forest Gump</h5>
+                  <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -142,6 +171,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Fight club</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -155,6 +187,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Inception</h5>
+                  <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -168,14 +203,18 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>The matrix</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                  </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-          {/* Row 1: Popular now */}
-          <div className="row mb-5">
-          <h2 style={{fontSize: '40px', color: '#FFD700', fontWeight: 'bold'}}>Popular now</h2>
+        <div className="container mt-4">
+          {/* Row 3*/}
+          <div className="row mt-4">
           {/* Movie 1 */}
           <div className="col-md-2">
             <div className="card">
@@ -186,6 +225,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Black Demon</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                  </div>
               </div>
             </div>
           </div>
@@ -199,6 +241,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Tetris</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -212,6 +257,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Cocaine Bear</h5>
+                 <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -225,6 +273,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Fast X</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
@@ -238,6 +289,9 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                 <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Paint</h5>
+                  <div className="mb-2">
+                    <StarRating onRate={dummyFunction} />
+                  </div>
               </div>
             </div>
           </div>
@@ -251,15 +305,20 @@ function HomeLoggedIn() {
               />
               <div className="card-body">
                  <h5 className="card-title" style={{ fontSize: '24px', fontFamily: 'Georgia, serif' }}>Old Dads</h5>
+                  <div className="mb-2">
+                  <StarRating onRate={dummyFunction} />
+                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
         {/* ... (Other Rows) ... */}
       </div>
     </div>
+  </div>
   );
 }
 
-export default HomeLoggedIn;
+export default Reviews;
