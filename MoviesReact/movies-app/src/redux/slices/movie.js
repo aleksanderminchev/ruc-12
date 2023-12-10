@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   movies: [],
   newestMovies: [],
+  currentPopular: [],
   mostPopularMovies: [],
   movie: null,
 };
@@ -34,6 +35,14 @@ const slice = createSlice({
     getMoviesNewestSuccess(state, action) {
       state.isLoading = false;
       state.newestMovies = action.payload.data;
+    },
+    getMoviesCurrentPopularSuccess(state, action) {
+      state.isLoading = false;
+      state.currentPopular = action.payload.data;
+    },
+    getMoviesTopPopularSuccess(state, action) {
+      state.isLoading = false;
+      state.mostPopularMovies = action.payload.data;
     },
     // GET User
     getUserSuccess(state, action) {
@@ -82,8 +91,57 @@ export function getMoviesNewest() {
       const response = await axios.get(`/api/title/current-year`, {
         withCredentials: true,
       });
-      console.log(response);
       dispatch(slice.actions.getMoviesNewestSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function getCurrentPopular() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/title/current-popular`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getMoviesCurrentPopularSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function getTopPopular() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/title/most-popular`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getMoviesTopPopularSuccess(response));
       return true;
     } catch (error) {
       console.log(error);
