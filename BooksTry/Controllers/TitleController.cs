@@ -89,7 +89,48 @@ namespace BooksTry.Controllers
         public List<Title> GetCurrentYearTitles()
         {
             int currentYear = DateTime.Now.Year; // Get the current year
-            string selectString = $"SELECT * FROM TITLE WHERE startYear = '{currentYear}' AND poster IS NOT NULL AND poster <> '' ORDER BY random() LIMIT 12;";
+            string selectString = $@"
+                SELECT 
+                    t1.*,
+                    t2.primaryTitle AS parentTitle
+                FROM TITLE t1
+                LEFT JOIN TITLE t2 ON t1.parent_id = t2.titleId
+                WHERE 
+                    t1.startYear = '{currentYear}' 
+                    AND t1.poster IS NOT NULL 
+                    AND t1.poster <> '' 
+                    AND t1.parent_id IS NOT NULL 
+                    AND t1.parent_id <> ''
+                ORDER BY random() 
+                LIMIT 10;";
+
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Title> result = new List<Title>();
+                        while (reader.Read())
+                        {
+                            Title item = ReadItem(reader);
+                            item.PrimaryTitle = reader.IsDBNull(16) ? "" : reader.GetString(16);
+
+                            result.Add(item);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+        // GET 10 Titles Popular
+        [HttpGet("current-popular")]
+        public List<Title> GetCurrentPopularTitles()
+        {
+            int currentYear = DateTime.Now.Year; // Get the current year
+            string selectString = $"SELECT * FROM TITLE WHERE startYear = '{currentYear}' AND poster IS NOT NULL AND poster <> '' ORDER BY random() LIMIT 10;";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {

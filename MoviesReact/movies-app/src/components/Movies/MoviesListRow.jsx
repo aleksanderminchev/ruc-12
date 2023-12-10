@@ -31,7 +31,7 @@ export default function MoviesList({ movies }) {
     <Grid container spacing={2} direction={"row"}>
       {newestMovies.map((movie, index) => {
         return (
-          <Grid key={index} item xs={1}>
+          <Grid key={index} item xs={1.2}>
             <Stack direction={"column"}>
               <Box
                 className="card-img-top"
