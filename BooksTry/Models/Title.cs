@@ -12,11 +12,11 @@ namespace BooksTry.Models
         public string TitleID { get; set; }
         public string PrimaryTitle { get; set; }
         public string OriginalTitle { get; set; }
-        public char TitleType { get; set; }
+        public string TitleType { get; set; }
         public string Genres { get; set; }
         public bool IsAdult { get; set; }
-        public char StartYear { get; set; }
-        public char EndYear { get; set; }
+        public string StartYear { get; set; }
+        public string EndYear { get; set; }
         public int RunTimeInMinutes { get; set; }
         [ForeignKey("ParentId")]
         public Title ParentTitle { get; set; }
@@ -34,10 +34,10 @@ namespace BooksTry.Models
         }
 
         public Title(string titleId, string primaryTitle,
-         string originalTitle, char titleType,
+         string originalTitle, string titleType,
           string genres,
           bool isAdult,
-          char startYear, char endYear,
+          string startYear, string endYear,
           int runTimeInMinutes, string parentId, string plot, string poster, int seasonNumber, int seasonEpisode, int numberOfVotes, int averageRating)
         {
             TitleID = titleId;

@@ -26,10 +26,14 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = action.payload; // if you only write action.payload, you do not dot-in to the actual data, where all data for customer is
     },
-    // GET Users
+    // GET MOVIES
     getMoviesSuccess(state, action) {
       state.isLoading = false;
       state.movies = action.payload.data;
+    },
+    getMoviesNewestSuccess(state, action) {
+      state.isLoading = false;
+      state.newestMovies = action.payload.data;
     },
     // GET User
     getUserSuccess(state, action) {
@@ -55,6 +59,31 @@ export function getMovies(pageNumber) {
       });
       console.log(response);
       dispatch(slice.actions.getMoviesSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function getMoviesNewest() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/title/current-year`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getMoviesNewestSuccess(response));
       return true;
     } catch (error) {
       console.log(error);

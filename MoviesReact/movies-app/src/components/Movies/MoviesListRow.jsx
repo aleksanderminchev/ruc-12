@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
-import { getMovies } from "../../redux/slices/movie";
+import { getMoviesNewest } from "../../redux/slices/movie";
 import {
   Grid,
   Typography,
@@ -12,8 +12,10 @@ import {
 } from "@mui/material";
 export default function MoviesList({ movies }) {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.movie);
-
+  const { newestMovies, isLoading } = useSelector((state) => state.movie);
+  useEffect(() => {
+    dispatch(getMoviesNewest());
+  }, []);
   return isLoading ? (
     <Box
       sx={{
@@ -27,78 +29,20 @@ export default function MoviesList({ movies }) {
     </Box>
   ) : (
     <Grid container spacing={2} direction={"row"}>
-      <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
-      <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
-      <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
-      <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
-      <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
-       <Grid item xs={1}>
-        <Stack direction={"column"}>
-          <Box
-            className="card-img-top"
-            component="img"
-            src={
-              "https://m.media-amazon.com/images/I/51kagj+xxpL._SL500_._SL200_.jpg"
-            }
-          />
-          <Typography>{"Fast X"}</Typography>
-        </Stack>
-      </Grid>
+      {newestMovies.map((movie, index) => {
+        return (
+          <Grid key={index} item xs={1}>
+            <Stack direction={"column"}>
+              <Box
+                className="card-img-top"
+                component="img"
+                src={movie.poster}
+              />
+              <Typography>{movie.primaryTitle}</Typography>
+            </Stack>
+          </Grid>
+        );
+      })}
     </Grid>
   );
 }

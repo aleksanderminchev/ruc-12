@@ -19,12 +19,12 @@ namespace BooksTry.Controllers
         private Title ReadItem(NpgsqlDataReader reader)
         {
             string titleId = reader.IsDBNull(0) ? "" : reader.GetString(0);
-            char titleType = reader.IsDBNull(1) ? '\0' : reader.GetChar(1);
+            string titleType = reader.IsDBNull(1) ? "" : reader.GetString(1);
             string primaryTitle = reader.IsDBNull(2) ? "" : reader.GetString(2);
             string originalTitle = reader.IsDBNull(3) ? "" : reader.GetString(3);
             bool isAdult = reader.IsDBNull(3) ? false : reader.GetBoolean(4);
-            char startYear = reader.IsDBNull(5) ? '\0' : reader.GetChar(5);
-            char endYear = reader.IsDBNull(6) ? '\0' : reader.GetChar(6);
+            string startYear = reader.IsDBNull(5) ? "" : reader.GetString(5);
+            string endYear = reader.IsDBNull(6) ? "" : reader.GetString(6);
             int runTimeInMinutes = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
             string genres = reader.IsDBNull(8) ? "" : reader.GetString(8);
             string parentId = reader.IsDBNull(9) ? "" : reader.GetString(9);
@@ -84,7 +84,31 @@ namespace BooksTry.Controllers
                 }
             }
         }
+        // GET 10 Titles from the Current Year (Random Selection)
+        [HttpGet("current-year")]
+        public List<Title> GetCurrentYearTitles()
+        {
+            int currentYear = DateTime.Now.Year; // Get the current year
+            string selectString = $"SELECT * FROM TITLE WHERE startYear = '{currentYear}' AND poster IS NOT NULL AND poster <> '' ORDER BY random() LIMIT 12;";
 
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                {
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Title> result = new List<Title>();
+                        while (reader.Read())
+                        {
+                            Title item = ReadItem(reader);
+                            result.Add(item);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
         // GET: api/Title/5
         //[HttpGet("{id}", Name = "Get")]
         [Route("{id:int}")]
