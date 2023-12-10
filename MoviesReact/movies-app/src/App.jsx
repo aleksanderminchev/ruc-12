@@ -9,6 +9,7 @@ import { store } from "./redux/store";
 import ScrollToTop from "./components/scroll-to-top";
 import Actors from "./components/Actors/Actors";
 import MoviesList from "./components/Movies/MoviesList";
+import MoviesListRow from "./components/Movies/MoviesListRow";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/movies" element={<MoviesList />} />
+                  <Route path="/moviesList" element={<MoviesListRow />} />
+
                   <Route
                     path="/movie"
                     element={
