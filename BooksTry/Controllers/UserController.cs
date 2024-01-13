@@ -164,38 +164,32 @@ namespace BooksTry.Controllers
             }
         }
 
-        // POST: api/User
-        [HttpPost]
-        public async void PostAsync([FromBody] User value)
+        // POST: api/User/signUp
+        [HttpPost("signUp")]
+        public bool SignUp([FromBody] User value)
         {
 
-            string insertString =
-                "INSERT INTO USER (FirstName,LastName, Pass, Email, UserType) values(@FirstName,@LastName, @Pass, @Email, @type);";
-            bool item = CheckUsernameValidation(value.Email);
-
-            if (item == true)
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
-                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+                conn.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand("SELECT insert_user(@p_email, @p_password, @p_is_verified, @p_first_name, @p_last_name)", conn))
                 {
-                    conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(insertString, conn))
-                    {
 
-                        command.Parameters.AddWithValue("@FirstName", value.FirstName);
-                        command.Parameters.AddWithValue("@LastName", value.LastName);
+                    // Add parameters for the stored function
+                    command.Parameters.AddWithValue("p_email", value.Email);
+                    command.Parameters.AddWithValue("p_password", value.Pass);
+                    command.Parameters.AddWithValue("p_is_verified", true); // Assuming you want to set this to true
+                    command.Parameters.AddWithValue("p_first_name", value.FirstName);
+                    command.Parameters.AddWithValue("p_last_name", value.LastName);
 
-                        command.Parameters.AddWithValue("@Pass", value.Pass);
-                        command.Parameters.AddWithValue("@Email", value.Email);
-                        command.Parameters.AddWithValue("@type", 1);
+                    // Execute the stored function
+                    command.ExecuteNonQuery();
 
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        await PostOrder(GetUserId());
-
-                        //return true;
-                    }
                 }
             }
+            bool item = CheckUsernameValidation(value.Email);
+
+            return item;
             //else
             //return false;
         }
@@ -203,7 +197,7 @@ namespace BooksTry.Controllers
         //[Route("{usernameValidation}")]
         public bool CheckUsernameValidation(string usernameValidation)
         {
-            string usernameValidationString = "SELECT * from USERs WHERE email = @emailV;";
+            string usernameValidationString = "SELECT * from USERs WHERE email = @email;";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
@@ -330,23 +324,23 @@ namespace BooksTry.Controllers
         }
         public User GetUserEmail(string email)
         {
-            string selectString = "SELECT * FROM USERS Where email = Email";
+            string selectString = "SELECT * FROM USERS WHERE Email = (@Email) LIMIT 1";
             Console.WriteLine(selectString);
             Console.WriteLine(email);
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM USERS WHERE Email = @Email LIMIT 1", conn))
                 {
+                    command.Parameters.AddWithValue("@Email", email);
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        Console.WriteLine("VEVEW");
-                        command.Parameters.AddWithValue("@Email", email);
+
                         if (reader.HasRows)
                         {
                             reader.Read();
                             User user1 = ReadItem(reader);
-                            Console.WriteLine(user1);
+                            Console.WriteLine(user1.Email);
                             return user1;
                         }
                         else
@@ -360,6 +354,7 @@ namespace BooksTry.Controllers
         }
         public bool ComparePasswords(User user, string password)
         {
+            Console.WriteLine(user.Email);
             string checkPasswordString = "SELECT crypt(@password, password_hashed),password_hashed FROM USERS WHERE email = @Email";
             string passwordCheckEncrypted = "";
             string db_stored_password = "";
@@ -379,6 +374,7 @@ namespace BooksTry.Controllers
                             passwordCheckEncrypted = reader.IsDBNull(0) ? "" : reader.GetString(0);
                             db_stored_password = reader.IsDBNull(1) ? "" : reader.GetString(1);
                             Console.WriteLine(passwordCheckEncrypted);
+                            Console.WriteLine(db_stored_password);
                         }
                         else
                         {
@@ -423,23 +419,6 @@ namespace BooksTry.Controllers
             }
         }
 
-        public async Task<bool> PostOrder(int userId)
-        {
-            string inseartString = "INSERT INTO ORDERS (UserId, TotalPrice, Paid) values(@userId, @totalPrice, @paid); ";
 
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(inseartString, conn))
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    command.Parameters.AddWithValue("@totalPrice", 0);
-                    command.Parameters.AddWithValue("@paid", false);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-                    return true;
-                }
-            }
-        }
     }
 }

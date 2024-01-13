@@ -84,7 +84,7 @@ export default function MoviesList() {
                           {movie.primaryTitle}
                         </Typography>
                         <Typography>
-                          Description: {movie.plot.substring(0, 150)}...
+                          Description: {movie.plot.substring(0, 100)}...
                         </Typography>
                       </Stack>
                     </Stack>

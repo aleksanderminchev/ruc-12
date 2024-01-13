@@ -5,9 +5,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "../../redux/store";
+
 function Header() {
   const [searchText, setSearchText] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const { user, isLoading } = useSelector((state) => state.user);
+
   return (
     <AppBar position="static">
       <Toolbar
@@ -32,6 +36,20 @@ function Header() {
           }}
           label="Search"
         ></TextField>
+        {!user ? (
+          <Button color="inherit" component={Link} to="/login">
+            Login
+          </Button>
+        ) : (
+          <>
+            <Button color="inherit" component={Link} to="/">
+              Logout
+            </Button>
+            <Button color="inherit" component={Link} to="/profile">
+              Profile
+            </Button>
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );

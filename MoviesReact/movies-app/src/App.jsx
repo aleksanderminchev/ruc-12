@@ -10,6 +10,9 @@ import ScrollToTop from "./components/scroll-to-top";
 import Actors from "./components/Actors/Actors";
 import MoviesList from "./components/Movies/MoviesList";
 import MoviesListRow from "./components/Movies/MoviesListRow";
+import SignIn from "./pages/auth/SignIn";
+import SignUp from "./pages/auth/Signup";
+import UpdateAccount from "./pages/auth/UpdateAccount";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -26,7 +29,9 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/movies" element={<MoviesList />} />
                   <Route path="/moviesList" element={<MoviesListRow />} />
-
+                  <Route path="/signUp" element={<SignUp />} />
+                  <Route path="/login" element={<SignIn />} />
+                  <Route path="/profile" element={<UpdateAccount />} />
                   <Route
                     path="/movie"
                     element={

@@ -1,6 +1,5 @@
 // Update.js
 import React from "react";
-import Navbar from "./Navbar"; // Adjust the path based on your project structure
 
 function Update() {
 
