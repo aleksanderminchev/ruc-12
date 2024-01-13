@@ -6,12 +6,12 @@ const initialState = {
   isLoading: false,
   error: null,
   actors: [],
-  mostPopularActors: [],
+
   actor: null,
 };
 
 const slice = createSlice({
-  name: "customer",
+  name: "actor",
   initialState,
   reducers: {
     // START LOADING
@@ -25,32 +25,25 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = action.payload; // if you only write action.payload, you do not dot-in to the actual data, where all data for customer is
     },
-    // GET Users
-    getUsersSuccess(state, action) {
+    // GET ACTORS
+    getActorsSuccess(state, action) {
       state.isLoading = false;
-      state.users = action.payload.data;
-    },
-    // GET User
-    getUserSuccess(state, action) {
-      state.isLoading = false;
-      state.user = action.payload.data;
-    },
-    // DELETE User
-    deleteCustomerSuccess(state, action) {
-      state.isLoading = false;
-      state.user = null;
+      state.actors = action.payload.data;
     },
   },
 });
 
 export default slice.reducer;
 
-export function getUsers() {
+export function getActors(pageNumber) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/api/users");
-      dispatch(slice.actions.getUsersSuccess(response.data));
+      const response = await axios.get(`/api/cast?page=${pageNumber}`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getActorsSuccess(response));
       return true;
     } catch (error) {
       console.log(error);

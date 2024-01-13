@@ -16,7 +16,7 @@ function Actors() {
                 src="https://i0.wp.com/www.whiskeyriff.com/wp-content/uploads/2020/04/Wolf-Of-Wallstreet-Matthew-McConaughey-FULL-SCENE-HD-YouTube.jpg?fit=884%2C460&ssl=1"
                 alt="Actor"
                 className="img-fluid rounded-start"
-                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                style={{ objectFit: 'cover', width: 'z%', height: '100%' }}
               />
             </div>
             <div className="col-md-6">

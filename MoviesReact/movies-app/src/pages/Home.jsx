@@ -22,16 +22,9 @@ function Home() {
   return (
     <>
       <MoviesListRow movies={newestMovies} title="Newest Movies" />
-      <Card sx={{ height: "100%", mb: "50px", backgroundColor: "#D9D9D9" }}>
-        <Typography variant="h3">Popular Movies</Typography>
+      <MoviesListRow movies={currentPopular} title="Popular Movies" />
 
-        <MoviesListRow movies={currentPopular} />
-      </Card>
-      <Card sx={{ height: "100%", mb: "50px", backgroundColor: "#D9D9D9" }}>
-        <Typography variant="h3">Top 10</Typography>
-
-        <MoviesListRow movies={mostPopularMovies} />
-      </Card>
+      <MoviesListRow movies={mostPopularMovies} title="Top 10" />
     </>
   );
 }

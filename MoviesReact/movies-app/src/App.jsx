@@ -10,10 +10,11 @@ import ScrollToTop from "./components/scroll-to-top";
 import Actors from "./components/Actors/Actors";
 import MoviesList from "./components/Movies/MoviesList";
 import MoviesListRow from "./components/Movies/MoviesListRow";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
-    <div>
+    <div style={{ backgroundColor: "black", color: "grey" }}>
       <HelmetProvider>
         <Router>
           <ReduxProvider store={store}>
@@ -42,13 +43,13 @@ function App() {
                   <Route
                     path="/actors"
                     element={
-                      <>
+                      <div className="actors bg-dark">
                         <Actors
                           title="Inception"
                           description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
                           poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
                         />
-                      </>
+                      </div>
                     }
                   />
                   {/* You can add more routes here */}

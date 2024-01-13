@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 // slices
 import userReducer from "./slices/user";
 import movieReducer from "./slices/movie";
-
+import actorReducer from "./slices/actor";
 // ----------------------------------------------------------------------
 
 export const rootPersistConfig = {
@@ -14,6 +14,10 @@ export const rootPersistConfig = {
   whitelist: [],
 };
 
-const rootReducer = combineReducers({ user: userReducer,movie:movieReducer });
+const rootReducer = combineReducers({
+  user: userReducer,
+  movie: movieReducer,
+  actor: actorReducer,
+});
 
 export default rootReducer;

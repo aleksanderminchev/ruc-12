@@ -5,7 +5,12 @@ import axios from "../../utils/axios";
 const initialState = {
   isLoading: false,
   error: null,
-  movies: [],
+  movies: {
+    movies: [],
+    pageSize: Number,
+    totalPages: Number,
+    totalRecords: Number,
+  },
   newestMovies: [],
   currentPopular: [],
   mostPopularMovies: [],
@@ -13,7 +18,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: "customer",
+  name: "movie",
   initialState,
   reducers: {
     // START LOADING
@@ -30,7 +35,12 @@ const slice = createSlice({
     // GET MOVIES
     getMoviesSuccess(state, action) {
       state.isLoading = false;
-      state.movies = action.payload.data;
+      state.movies = {
+        movies: action.payload.data.data,
+        pageSize: action.payload.data.pageSize,
+        totalPage: action.payload.data.totalPages,
+        totalRecords: action.payload.data.totalRecords,
+      };
     },
     getMoviesNewestSuccess(state, action) {
       state.isLoading = false;

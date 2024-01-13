@@ -59,27 +59,41 @@ namespace BooksTry.Controllers
             return item;
         }
 
-        // GET ALL Paginated
         [HttpGet]
-        public List<Title> Get(int page = 1, int pageSize = 30)
+        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30)
         {
             int offset = (page - 1) * pageSize;
             string selectString = $"SELECT * FROM TITLE OFFSET {offset} LIMIT {pageSize};";
+            string countString = "SELECT COUNT(*) FROM TITLE;";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                using (NpgsqlCommand countCommand = new NpgsqlCommand(countString, conn))
                 {
-                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    int totalRecords = Convert.ToInt32(countCommand.ExecuteScalar());
+                    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        List<Title> result = new List<Title>();
-                        while (reader.Read())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
-                            Title item = ReadItem(reader);
-                            result.Add(item);
+                            List<Title> result = new List<Title>();
+                            while (reader.Read())
+                            {
+                                Title item = ReadItem(reader);
+                                result.Add(item);
+                            }
+
+                            return new PaginatedResult<Title>
+                            {
+                                Data = result,
+                                TotalPages = totalPages,
+                                CurrentPage = page,
+                                PageSize = pageSize,
+                                TotalRecords = totalRecords
+                            };
                         }
-                        return result;
                     }
                 }
             }
@@ -137,7 +151,7 @@ namespace BooksTry.Controllers
                         FROM TITLE t1
                         LEFT JOIN TITLE t2 ON t1.parent_id = t2.titleId
                     WHERE 
-                        t1.startyear = '{currentYear}' 
+                        t1.startyear = '{2023}' 
                         AND t1.poster IS NOT NULL 
                         AND t1.poster <> '' 
                         AND t1.averagerating IS NOT NULL
@@ -200,6 +214,7 @@ namespace BooksTry.Controllers
                             item.PrimaryTitle = reader.IsDBNull(16) ? "" : reader.GetString(16);
                             result.Add(item);
                         }
+                        Console.WriteLine(result);
                         return result;
                     }
                 }
