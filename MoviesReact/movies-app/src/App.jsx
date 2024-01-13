@@ -7,6 +7,9 @@ import { HelmetProvider } from "react-helmet-async";
 import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./redux/store";
 import ScrollToTop from "./components/scroll-to-top";
+import Actors from "./components/Actors/Actors";
+import MoviesList from "./components/Movies/MoviesList";
+import MoviesListRow from "./components/Movies/MoviesListRow";
 
 function App() {
   return (
@@ -20,12 +23,27 @@ function App() {
               <div style={{ margin: "20px" }}>
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/movies" element={<MoviesList />} />
+                  <Route path="/moviesList" element={<MoviesListRow />} />
+
                   <Route
-                    path="/movies"
+                    path="/movie"
                     element={
                       <>
                         <h1 style={{ textAlign: "center" }}>My Movie App</h1>
                         <Movie
+                          title="Inception"
+                          description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
+                          poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
+                        />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/actors"
+                    element={
+                      <>
+                        <Actors
                           title="Inception"
                           description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
                           poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"

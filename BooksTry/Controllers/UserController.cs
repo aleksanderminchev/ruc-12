@@ -45,11 +45,14 @@ namespace BooksTry.Controllers
         {
             int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             string firstName = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            Console.WriteLine(firstName);
+
             string lastName = reader.IsDBNull(5) ? "" : reader.GetString(5);
+            Console.WriteLine(lastName);
             string pass = reader.IsDBNull(2) ? "" : reader.GetString(2);
             string email = reader.IsDBNull(1) ? "" : reader.GetString(1);
             bool isVerified = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
-
+            Console.WriteLine(pass);
             User item = new User()
             {
                 UserId = userId,
@@ -251,7 +254,7 @@ namespace BooksTry.Controllers
         [HttpPut("passChange/{id}")]
         public int PutPass(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE USERS SET Pass=@Pass where UserId = @id;";
+            string updateString = "UPDATE USERS SET Pass = @Pass where UserId = @id;";
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
@@ -299,12 +302,14 @@ namespace BooksTry.Controllers
 
                     // Split the credentials into email and password
                     string[] credentialParts = credentials.Split(':');
-
+                    Console.WriteLine(credentials);
+                    Console.WriteLine(credentialParts.Length);
                     if (credentialParts.Length == 2)
                     {
                         string email = credentialParts[0];
                         string password = credentialParts[1];
-
+                        Console.WriteLine(email);
+                        Console.WriteLine(password);
                         User user = GetUserEmail(email);
 
                         if (user != null && ComparePasswords(user, password))
@@ -320,12 +325,15 @@ namespace BooksTry.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                Console.WriteLine(e.Message);
+                return BadRequest("Error with login");
             }
         }
         public User GetUserEmail(string email)
         {
-            string selectString = "SELECT * FROM USERS Where Email=@Email DESC";
+            string selectString = "SELECT * FROM USERS Where email = Email";
+            Console.WriteLine(selectString);
+            Console.WriteLine(email);
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
@@ -333,14 +341,18 @@ namespace BooksTry.Controllers
                 {
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
+                        Console.WriteLine("VEVEW");
                         command.Parameters.AddWithValue("@Email", email);
                         if (reader.HasRows)
                         {
                             reader.Read();
-                            return ReadItem(reader);
+                            User user1 = ReadItem(reader);
+                            Console.WriteLine(user1);
+                            return user1;
                         }
                         else
                         {
+                            Console.WriteLine("ERROR with ermail");
                             throw new Exception("No user found with this email address");
                         }
                     }
@@ -349,16 +361,19 @@ namespace BooksTry.Controllers
         }
         public bool ComparePasswords(User user, string password)
         {
-            string encryptPasswordString = "Select crypt(@password, gen_salt('bf'))";
+            string checkPasswordString = "SELECT crypt(@password, password_hashed) FROM USERS WHERE email = @Email";
             string passwordCheckEncrypted = "";
+
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(encryptPasswordString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(checkPasswordString, conn))
                 {
+                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@Email", user.Email);
+
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        command.Parameters.AddWithValue("@password", password);
                         if (reader.HasRows)
                         {
                             reader.Read();
@@ -370,6 +385,8 @@ namespace BooksTry.Controllers
                         }
                     }
                 }
+
+                // Compare the hashed password from the database with the user's hashed password
                 if (passwordCheckEncrypted == user.Pass)
                 {
                     return true;
@@ -379,8 +396,8 @@ namespace BooksTry.Controllers
                     return false;
                 }
             }
-
         }
+
         public int GetUserId()
         {
             string selectString = "SELECT TOP 1 * FROM USERS ORDER BY UserId DESC";

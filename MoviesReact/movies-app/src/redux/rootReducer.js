@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 // slices
 import userReducer from "./slices/user";
+import movieReducer from "./slices/movie";
 
 // ----------------------------------------------------------------------
 
@@ -13,6 +14,6 @@ export const rootPersistConfig = {
   whitelist: [],
 };
 
-const rootReducer = combineReducers({ user: userReducer });
+const rootReducer = combineReducers({ user: userReducer,movie:movieReducer });
 
 export default rootReducer;
