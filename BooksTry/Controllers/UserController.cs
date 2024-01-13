@@ -49,16 +49,15 @@ namespace BooksTry.Controllers
 
             string lastName = reader.IsDBNull(5) ? "" : reader.GetString(5);
             Console.WriteLine(lastName);
-            string pass = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            // string pass = reader.IsDBNull(2) ? "" : reader.GetString(2);
             string email = reader.IsDBNull(1) ? "" : reader.GetString(1);
             bool isVerified = reader.IsDBNull(3) ? false : reader.GetBoolean(3);
-            Console.WriteLine(pass);
             User item = new User()
             {
                 UserId = userId,
                 FirstName = firstName,
                 LastName = lastName,
-                Pass = pass,
+                // Pass = pass,
                 Email = email,
                 IsVerified = isVerified
             };
@@ -361,9 +360,9 @@ namespace BooksTry.Controllers
         }
         public bool ComparePasswords(User user, string password)
         {
-            string checkPasswordString = "SELECT crypt(@password, password_hashed) FROM USERS WHERE email = @Email";
+            string checkPasswordString = "SELECT crypt(@password, password_hashed),password_hashed FROM USERS WHERE email = @Email";
             string passwordCheckEncrypted = "";
-
+            string db_stored_password = "";
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
@@ -378,6 +377,8 @@ namespace BooksTry.Controllers
                         {
                             reader.Read();
                             passwordCheckEncrypted = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                            db_stored_password = reader.IsDBNull(1) ? "" : reader.GetString(1);
+                            Console.WriteLine(passwordCheckEncrypted);
                         }
                         else
                         {
@@ -387,7 +388,7 @@ namespace BooksTry.Controllers
                 }
 
                 // Compare the hashed password from the database with the user's hashed password
-                if (passwordCheckEncrypted == user.Pass)
+                if (passwordCheckEncrypted == db_stored_password)
                 {
                     return true;
                 }
