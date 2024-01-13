@@ -7,6 +7,9 @@ import Actors from "./Actors";
 import ViewMovie from "./ViewMovie";
 import Home from "./Home";
 import HomeLoggedin from "./HomeLoggedin";
+import Bookmarks from "./Bookmarks";
+import Reviews from "./Reveiws";
+import Movies from "./Movies";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -20,6 +23,10 @@ function App() {
             <Route path='/viewmovie' element={<ViewMovie />}></Route>
             <Route path='/home' element={<Home />}></Route>
             <Route path='/homeloggedin' element={<HomeLoggedin />}></Route>
+            <Route path='/bookmarks' element={<Bookmarks />}></Route>
+            <Route path='/reviews' element={<Reviews />}></Route>
+            <Route path='/movies' element={<Movies />}></Route>
+
         </Routes>
     </BrowserRouter>
   )

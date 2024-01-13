@@ -4,7 +4,7 @@ import Navbar from "./Navbar"; // Adjust the path based on your project structur
 
 function HomeLoggedIn() {
   return (
-    <div className="home" style={{ minHeight: '100vh', backgroundColor: 'black', color: 'white', overflowX: 'hidden' }}>
+    <div className="homeloggedin" style={{ minHeight: '100vh', backgroundColor: 'black', color: 'white', overflowX: 'hidden' }}>
       <Navbar isLoggedIn={true} onLogout={() => console.log("Logout")} /> {/* Replace console.log with your logout logic */}
       <div className="container mt-4">
         {/* Row 1: Newest Movies */}

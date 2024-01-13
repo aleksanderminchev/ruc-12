@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.filter-bars {
+  position: sticky;
+  top: 0;
+  float: right; /* You can also use 'right: 0;' instead of 'float: right;' */
+  width: 200px; /* Adjust width as needed */
+  background-color: #fff; /* Adjust background color as needed */
+  box-shadow: -5px 0px 15px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow effect */
+  padding: 10px; /* Adjust padding as needed */
+  z-index: 1000; /* Adjust z-index as needed */
+}
+
+
+
