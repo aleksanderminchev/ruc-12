@@ -33,18 +33,35 @@ export default function MoviesList() {
       {movies.map((movie, index) => {
         return (
           <Grid key={index} item xs={3}>
-            <Card sx={{ width: "100%" }}>
+            <Card
+              sx={{
+                paddingTop: "10px",
+                paddingLeft: "10px",
+                paddingRight: "10px",
+                width: "95%",
+                backgroundColor: "#D9D9D9",
+              }}
+            >
               <Stack direction={"row"} rowGap={2} spacing={2}>
                 <Box
                   component="img"
                   src={movie.poster}
-                  sx={{ height: 100, mt: "10px", ml: "10px" }}
+                  sx={{ height: 300 }}
+                  style={{
+                    maxWidth: "100%", // Ensure the image does not exceed the container width
+                    maxHeight: "70%", // Set the maximum height to fill 7/10 of the container
+                    objectFit: "cover", // Maintain aspect ratio and crop as needed
+                  }}
                   justifyContent={"space-between"}
                 />
-                <Typography variant="h4">{movie.primaryTitle}</Typography>
+                <Stack direction={"column"} spacing={1}>
+                  <Typography variant="h4">{movie.primaryTitle}</Typography>
+                  <Typography>
+                    Description: {movie.plot.substring(0, 150)}...
+                  </Typography>
+                </Stack>
               </Stack>
 
-              <Typography>{movie.plot.substring(0, 30)}...</Typography>
               <Stack
                 direction={"row"}
                 rowGap={2}
