@@ -37,25 +37,40 @@ namespace BooksTry.Controllers
         }
         // GET ALL Paginated
         [HttpGet]
-        public List<CastMember> Get(int page = 1, int pageSize = 30)
+        public PaginatedResult<CastMember> Get(int page = 1, int pageSize = 30)
         {
             int offset = (page - 1) * pageSize;
             string selectString = $"SELECT * FROM names OFFSET {offset} LIMIT {pageSize};";
+            string countString = "SELECT COUNT(*) FROM names;";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
+                using (NpgsqlCommand countCommand = new NpgsqlCommand(countString, conn))
                 {
-                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    int totalRecords = Convert.ToInt32(countCommand.ExecuteScalar());
+                    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
-                        List<CastMember> result = new List<CastMember>();
-                        while (reader.Read())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
-                            CastMember item = ReadItem(reader);
-                            result.Add(item);
+                            List<CastMember> result = new List<CastMember>();
+                            while (reader.Read())
+                            {
+                                CastMember item = ReadItem(reader);
+                                result.Add(item);
+                            }
+
+                            return new PaginatedResult<CastMember>
+                            {
+                                Data = result,
+                                TotalPages = totalPages,
+                                CurrentPage = page,
+                                PageSize = pageSize,
+                                TotalRecords = totalRecords
+                            };
                         }
-                        return result;
                     }
                 }
             }

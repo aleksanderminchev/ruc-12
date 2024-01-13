@@ -5,7 +5,12 @@ import axios from "../../utils/axios";
 const initialState = {
   isLoading: false,
   error: null,
-  actors: [],
+  actors: {
+    actors: [],
+    pageSize: Number,
+    totalPages: Number,
+    totalRecords: Number,
+  },
 
   actor: null,
 };
@@ -28,7 +33,12 @@ const slice = createSlice({
     // GET ACTORS
     getActorsSuccess(state, action) {
       state.isLoading = false;
-      state.actors = action.payload.data;
+      state.actors = {
+        actors: action.payload.data.data,
+        pageSize: action.payload.data.pageSize,
+        totalPage: action.payload.data.totalPages,
+        totalRecords: action.payload.data.totalRecords,
+      };
     },
   },
 });
