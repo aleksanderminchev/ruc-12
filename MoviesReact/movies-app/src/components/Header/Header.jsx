@@ -1,18 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
-import { logout } from "../../redux/slices/user";
-function Header() {
-  const dispatch = useDispatch();
-  const [searchText, setSearchText] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const { user, isLoading } = useSelector((state) => state.user);
+import { search } from "../../redux/slices/movie";
 
+import { logout, getSearches } from "../../redux/slices/user";
+function Header() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, userSearches, isLoading } = useSelector((state) => state.user);
+  const [searchText, setSearchText] = useState("");
+  useEffect(() => {
+    if (user) {
+      dispatch(getSearches(user.userId));
+    }
+  }, [user, dispatch]);
+  const handleSearch = async (text) => {
+    try {
+      const response = await dispatch(search(searchText));
+      if (response) {
+        navigate("/");
+      } else {
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <AppBar position="static">
       <Toolbar
@@ -31,12 +50,32 @@ function Header() {
         <Button color="inherit" component={Link} to="/actors">
           Actors
         </Button>
-        <TextField
-          onClick={() => {
-            setSearchOpen(!searchOpen);
+        <Autocomplete
+          sx={{ width: "20%" }}
+          freeSolo
+          inputValue={searchText}
+          onInputChange={(event, newInputValue) => {
+            setSearchText(newInputValue);
           }}
-          label="Search"
-        ></TextField>
+          options={userSearches ? userSearches : ["vwrv", "bwrbwrb", "brbrbw"]}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  // Handle the Enter key press event here
+                  handleSearch(event.target.value);
+                  console.log();
+                }
+              }}
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
+        />
         {!user ? (
           <Button color="inherit" component={Link} to="/login">
             Login

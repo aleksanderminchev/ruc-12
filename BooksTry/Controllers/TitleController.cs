@@ -526,37 +526,6 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("allfreetitles")]
-        public int GetAllFreeTitles()
-        {
-            try
-            {
-                string selectString = "select * from TITLE where Price = '0'";
-
-                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
-                {
-                    conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
-                    {
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
-                        {
-                            List<Title> result = new List<Title>();
-                            while (reader.Read())
-                            {
-                                Title item = ReadItem(reader);
-                                result.Add(item);
-                            }
-                            return result.Count;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-        }
-
 
     }
 }

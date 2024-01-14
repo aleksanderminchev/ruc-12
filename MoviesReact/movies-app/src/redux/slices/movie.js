@@ -14,6 +14,7 @@ const initialState = {
   newestMovies: [],
   currentPopular: [],
   mostPopularMovies: [],
+  searchedMovies: [],
   movie: null,
 };
 
@@ -44,6 +45,10 @@ const slice = createSlice({
         totalPage: action.payload.data.totalPages,
         totalRecords: action.payload.data.totalRecords,
       };
+    },
+    getSearchSuccess(state, action) {
+      state.isLoading = false;
+      state.searchedMovies = action.payload.data;
     },
     getMoviesNewestSuccess(state, action) {
       state.isLoading = false;
@@ -102,9 +107,12 @@ export function getMovies(pageNumber, genre, rating, reviews) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get(`/api/title?page=${pageNumber}&genre=${genre}&rating=${rating}&reviews=${reviews}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `/api/title?page=${pageNumber}&genre=${genre}&rating=${rating}&reviews=${reviews}`,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response);
       dispatch(slice.actions.getMoviesSuccess(response));
       return true;
@@ -136,6 +144,39 @@ export function bookMarkMovie(movie_id, user_id) {
       );
       console.log(response);
       return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function search(searchText, userid) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/search",
+        {
+          SearchText: searchText,
+          UserId: userid,
+        }
+      );
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        dispatch(slice.actions.getSearchSuccess(response));
+        return true;
+      }
     } catch (error) {
       console.log(error);
       let errorMessage = "";

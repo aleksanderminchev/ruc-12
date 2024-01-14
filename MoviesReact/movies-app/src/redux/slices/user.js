@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   users: [],
   user: null,
+  userSearches: [],
 };
 
 const slice = createSlice({
@@ -33,6 +34,10 @@ const slice = createSlice({
     getUserSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload.data;
+    },
+    getSearchSuccess(state, action) {
+      state.isLoading = false;
+      state.userSearches = action.payload.data;
     },
     logOut(state, action) {
       state.error = null;
@@ -118,6 +123,7 @@ export function signUp(email, password, firstName, lastName, repeatPassword) {
     }
   };
 }
+
 export function logout() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
@@ -139,7 +145,37 @@ export function logout() {
     }
   };
 }
-
+export function getSearches(userid) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/search/${userid}`
+      );
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        dispatch(
+          slice.actions.getSearchSuccess(response.map((a) => a.SearchText))
+        );
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function updateProfile(
   userId,
   email,

@@ -9,10 +9,10 @@ namespace BooksTry.Models
     {
         public int SearchId { get; set; }
         public int UserId { get; set; }
-        public string CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string SearchText { get; set; }
 
-        public Search(int searchId, int userId, string createdAt, string searchText)
+        public Search(int searchId, int userId, DateTime createdAt, string searchText)
         {
             SearchId = searchId;
             UserId = userId;
