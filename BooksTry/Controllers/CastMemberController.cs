@@ -79,22 +79,69 @@ namespace BooksTry.Controllers
         }
         // GET ALL Paginated
         [HttpGet]
-        public PaginatedResult<CastMember> Get(int page = 1, int pageSize = 30)
+        public PaginatedResult<CastMember> Get(int page = 1, int pageSize = 30, string age = "", string profession = "")
         {
+            int minAge, maxAge;
+
+            // Depending on the selected age range option, set the minAge and maxAge values accordingly
+            switch (age)
+            {
+                case "19":
+                    minAge = 0;
+                    maxAge = 19;
+                    break;
+                case "39":
+                    minAge = 20;
+                    maxAge = 39;
+                    break;
+                case "59":
+                    minAge = 40;
+                    maxAge = 59;
+                    break;
+                case "89":
+                    minAge = 60;
+                    maxAge = 89;
+                    break;
+                case "90":
+                    minAge = 90;
+                    maxAge = int.MaxValue; // Represents 90+
+                    break;
+                default:
+                    minAge = 0;
+                    maxAge = int.MaxValue; // No age filter (select all ages)
+                    break;
+            }
             int offset = (page - 1) * pageSize;
-            string selectString = $"SELECT * FROM names OFFSET {offset} LIMIT {pageSize};";
-            string countString = "SELECT COUNT(*) FROM names;";
+            string selectString = "SELECT * FROM names WHERE " +
+                                 "((COALESCE(NULLIF(deathYear, '')::integer, 2024) - COALESCE(NULLIF(birthYear, '')::integer, 1967)) >= @minAge " +
+                                 "AND (COALESCE(NULLIF(deathYear, '')::integer, 2024) - COALESCE(NULLIF(birthYear, '')::integer, 1967)) <= @age) " +
+                                 "AND ((COALESCE(@profession, '') = '' OR @profession IS NULL) OR @profession = ANY(string_to_array(primaryprofession, ','))) " +
+                                 "OFFSET @offset LIMIT @pageSize;";
+
+            string countString = "SELECT COUNT(*) FROM names WHERE " +
+                                "((COALESCE(NULLIF(deathYear, '')::integer, 2024) - COALESCE(NULLIF(birthYear, '')::integer, 1967)) >= @minAge) " +
+                                "AND ((COALESCE(@profession, '') = '' OR @profession IS NULL) OR @profession = ANY(string_to_array(primaryprofession, ',')));";
+
+
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
                 using (NpgsqlCommand countCommand = new NpgsqlCommand(countString, conn))
                 {
+                    countCommand.Parameters.AddWithValue("@profession", string.IsNullOrEmpty(profession) ? (object)DBNull.Value : profession);
+                    countCommand.Parameters.AddWithValue("@minAge", minAge);
+                    countCommand.Parameters.AddWithValue("@age", maxAge);
                     int totalRecords = Convert.ToInt32(countCommand.ExecuteScalar());
                     int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
                     using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
+                        command.Parameters.AddWithValue("@profession", string.IsNullOrEmpty(profession) ? (object)DBNull.Value : profession);
+                        command.Parameters.AddWithValue("@minAge", minAge);
+                        command.Parameters.AddWithValue("@age", maxAge);
+                        command.Parameters.AddWithValue("@offset", offset);
+                        command.Parameters.AddWithValue("@pageSize", pageSize);
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<CastMember> result = new List<CastMember>();

@@ -16,10 +16,16 @@ function Actors() {
   const dispatch = useDispatch();
   const { actors, isLoading } = useSelector((state) => state.actor);
   const [page, setPages] = useState(1);
+  const [age, setAge] = useState(0);
+  const [profession, setProfession] = useState("");
   useEffect(() => {
-    dispatch(getActors(page));
-  }, [page, dispatch]);
+    dispatch(getActors(page, profession, age));
+  }, [page, dispatch, age, profession]);
   console.log(actors);
+  const handleApplyFilters = (age, profession) => {
+    setAge(age);
+    setProfession(profession);
+  };
   return (
     <div
       style={{
@@ -42,7 +48,7 @@ function Actors() {
         />
         <div className="row">
           <div className="col-md-2">
-            <FilterBar forActor={true} />
+            <FilterBar forActor={true} applyFiltersActor={handleApplyFilters} />
           </div>
           {/* Navbar component without the navbar class */}
           <div className="col-md-10">

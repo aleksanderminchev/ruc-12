@@ -53,11 +53,11 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export function getActors(pageNumber) {
+export function getActors(pageNumber,profession,age) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get(`/api/cast?page=${pageNumber}`, {
+      const response = await axios.get(`/api/cast?page=${pageNumber}&age=${age}&profession=${profession}`, {
         withCredentials: true,
       });
       console.log(response);

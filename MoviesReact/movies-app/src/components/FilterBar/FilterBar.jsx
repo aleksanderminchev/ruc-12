@@ -2,12 +2,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const FilterBar = ({ forActor, applyFiltersMovie }) => {
+const FilterBar = ({ forActor, applyFiltersMovie, applyFiltersActor }) => {
   const [genre, setGenre] = useState("");
   const [rating, setRating] = useState(0);
   const [reviews, setReviews] = useState(0);
+  const [age, setAge] = useState(0);
+  const [profession, setProfession] = useState("");
   const handleApplyFilters = () => {
     applyFiltersMovie(genre, rating, reviews);
+    // Dispatch an action or use a callback to apply filters
+    // You can dispatch an action or trigger a callback to fetch filtered data here
+  };
+  const handleApplyFiltersActors = () => {
+    applyFiltersActor(age, profession);
     // Dispatch an action or use a callback to apply filters
     // You can dispatch an action or trigger a callback to fetch filtered data here
   };
@@ -18,22 +25,28 @@ const FilterBar = ({ forActor, applyFiltersMovie }) => {
           <div className="rol-lg-12 flex-row align-items-stretch">
             <label htmlFor="age_range">Age range:</label>
             <select
+              onChange={(e) => {
+                setAge(e.target.value);
+              }}
               className="form-select"
               id="age range"
               // onChange={(e) => handleFilterChange("age range", e.target.value)}
             >
-              <option value="all">All ages</option>
-              <option value="0-19">0-19</option>
-              <option value="20-39">20-39</option>
-              <option value="40-59">40-59</option>
-              <option value="60-89">60-89</option>
-              <option value="90+">90+</option>
+              <option></option>
+              <option value="19">0-19</option>
+              <option value="39">20-39</option>
+              <option value="59">40-59</option>
+              <option value="89">60-89</option>
+              <option value="90">90+</option>
               {/* Add other age options here */}
             </select>
           </div>
           <div className="rol-lg-12 flex-row align-items-stretch">
             <label htmlFor="profession">Profession:</label>
             <select
+              onChange={(e) => {
+                setProfession(e.target.value);
+              }}
               className="form-select"
               id="profession"
               // onChange={(e) => handleFilterChange("profession", e.target.value)}
@@ -41,8 +54,8 @@ const FilterBar = ({ forActor, applyFiltersMovie }) => {
               <option></option>
               <option value="actor">Actor</option>
               <option value="actress">Actress</option>
-              <option value="soundrack">Soundrack</option>
-              <option value="product">Product</option>
+              <option value="soundtrack">Soundtrack</option>
+              <option value="producer">Producer</option>
               <option value="director">Director</option>
               <option value="writer">Writer</option>
               {/* Add other profession options here */}
@@ -51,7 +64,7 @@ const FilterBar = ({ forActor, applyFiltersMovie }) => {
           <div className="rol-lg-12 ">
             <button
               className="btn btn-primary btn-lg w-100"
-              onClick={handleApplyFilters}
+              onClick={handleApplyFiltersActors}
             >
               Apply
             </button>

@@ -60,7 +60,7 @@ namespace BooksTry.Controllers
         }
 
         [HttpGet]
-        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "", int rating = 9, int reviews = 0)
+        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "", int rating = 0, int reviews = 0)
         {
 
             int offset = (page - 1) * pageSize;
