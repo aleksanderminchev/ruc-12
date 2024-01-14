@@ -1,9 +1,43 @@
 // Login.js
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../redux/slices/user";
+import { useSelector, useDispatch } from "../../redux/store";
+import { Box, CircularProgress, Button } from "@mui/material";
 function Login() {
-  return (
+  const dispatch = useDispatch();
+  const { user, isLoading } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleLogin = async () => {
+    console.log(email, password);
+    try {
+      console.log("Show login message");
+
+      const response = await dispatch(login(email, password));
+      if (response) {
+        console.log("Show login message");
+        navigate("/");
+      } else {
+        console.log("Show error message");
+      }
+    } catch (error) {
+      console.log("Churka: ", error); // Handle errors, unauthorized, etc.
+    }
+  };
+  return isLoading ? (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  ) : !user ? (
     <div className="login">
       <div className="template d-flex justify-content-center align-items-center vh-100 bg-primary bg-primary navbar navbar-expand-lg navbar-light bg-dark">
         <div
@@ -15,6 +49,9 @@ function Login() {
             <div className="mb-3">
               <label htmlFor="email">Email</label>
               <input
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
                 type="email"
                 placeholder="Enter Email"
                 className="form-control"
@@ -24,6 +61,9 @@ function Login() {
             <div className="mb-3">
               <label htmlFor="password">Password</label>
               <input
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 type="password"
                 placeholder="Enter password"
                 className="form-control"
@@ -31,12 +71,14 @@ function Login() {
               />
             </div>
             <div className="d-grid">
-              <button
-                className="btn btn-primary"
+              <Button
+                onClick={() => {
+                  handleLogin();
+                }}
                 style={{ padding: "15px", fontSize: "18px" }}
               >
                 Log in
-              </button>
+              </Button>
             </div>
             <div className="mb-2">
               <input
@@ -58,6 +100,8 @@ function Login() {
         </div>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }
 

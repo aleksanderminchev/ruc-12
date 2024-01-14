@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getMovie, bookMarkMovie } from "../../redux/slices/movie";
-import { useSelector, useDispatch } from "../../redux/store";
+import { bookMarkActor, getActor, getActorMovies } from "../redux/slices/actor";
+import { useSelector, useDispatch } from "../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
-import MovieTest from "./MovieTest";
-function ViewMovie() {
+import Actor from "../components/Actors/Actor";
+function ViewActor() {
   // Replace these with actual data from your database or API
   const dispatch = useDispatch();
   const { id } = useParams();
   console.log(id);
-  const { movie, isLoading } = useSelector((state) => state.movie);
+  const { actor, actorMovies, isLoading } = useSelector((state) => state.actor);
   const { user } = useSelector((state) => state.user);
 
-  const handleBookmarkMovie = async (movie_id, user_id) => {
+
+  const handleBookmarkActor = async (movie_id, user_id) => {
     try {
-      const response = await dispatch(bookMarkMovie(movie_id, user_id));
+      const response = await dispatch(bookMarkActor(movie_id, user_id));
       if (response) {
         console.log("Success");
       } else {
@@ -26,12 +27,13 @@ function ViewMovie() {
   };
   useEffect(() => {
     if (id) {
-      dispatch(getMovie(id));
+      dispatch(getActor(id));
+      dispatch(getActorMovies(id));
     }
   }, [dispatch, id]);
   // Function to split the cast into two groups
-
-  return !isLoading && !movie ? (
+  console.log(actor);
+  return isLoading && !actor ? (
     <Box
       sx={{
         display: "flex",
@@ -44,9 +46,15 @@ function ViewMovie() {
     </Box>
   ) : (
     <>
-      <MovieTest movie={movie} boomarkMovie={handleBookmarkMovie} user={user} />
+      <Actor
+        user={user}
+        actor={actor}
+        actorMovies={actorMovies}
+        isLoading={isLoading}
+        bookmarkActor={handleBookmarkActor}
+      />
     </>
   );
 }
 
-export default ViewMovie;
+export default ViewActor;

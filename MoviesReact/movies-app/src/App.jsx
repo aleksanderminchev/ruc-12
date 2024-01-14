@@ -8,12 +8,18 @@ import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./redux/store";
 import ScrollToTop from "./components/scroll-to-top";
 import Actors from "./components/Actors/Actors";
+import ViewMovie from "./components/Movies/Movie";
 import MoviesList from "./components/Movies/MoviesList";
 import MoviesListRow from "./components/Movies/MoviesListRow";
+import SignIn from "./pages/auth/SignIn";
+import SignUp from "./pages/auth/Signup";
+import UpdateAccount from "./pages/auth/UpdateAccount";
+import "bootstrap/dist/css/bootstrap.min.css";
+import ViewActor from "./pages/ViewActor";
 
 function App() {
   return (
-    <div>
+    <div style={{ backgroundColor: "black", color: "grey" }}>
       <HelmetProvider>
         <Router>
           <ReduxProvider store={store}>
@@ -23,9 +29,13 @@ function App() {
               <div style={{ margin: "20px" }}>
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/movie/:id" element={<ViewMovie />} />
+                  <Route path="/actor/:id" element={<ViewActor />} />
                   <Route path="/movies" element={<MoviesList />} />
                   <Route path="/moviesList" element={<MoviesListRow />} />
-
+                  <Route path="/signUp" element={<SignUp />} />
+                  <Route path="/login" element={<SignIn />} />
+                  <Route path="/profile" element={<UpdateAccount />} />
                   <Route
                     path="/movie"
                     element={
@@ -42,13 +52,13 @@ function App() {
                   <Route
                     path="/actors"
                     element={
-                      <>
+                      <div className="actors bg-dark">
                         <Actors
                           title="Inception"
                           description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
                           poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
                         />
-                      </>
+                      </div>
                     }
                   />
                   {/* You can add more routes here */}
