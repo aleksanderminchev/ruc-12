@@ -60,21 +60,22 @@ namespace BooksTry.Controllers
         }
 
         [HttpGet]
-        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "", int rating = 9, int reviews = 0)
+        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "Comedy", int rating = 9, int reviews = 0)
         {
-            Console.WriteLine(rating);
-            Console.WriteLine(reviews);
+            Console.WriteLine(genre);
+
             int offset = (page - 1) * pageSize;
             string selectString = "SELECT * FROM TITLE " +
-                                 $"WHERE  " +
-                                 $" averagerating >= {rating} " +
-                                 $"AND numvotes >= {reviews} " +
-                                 $"OFFSET {offset} " +
-                                 $"LIMIT {pageSize};";
-            Console.WriteLine(selectString);
+                                 $"WHERE  ((COALESCE( @genre, '') = '' AND COALESCE(genres, '') = '')" +
+                                $"OR @genre = ANY(string_to_array(genres, ','))) " +
+                                 $" AND averagerating >= @rating " +
+                                 $"AND numvotes >= @reviews " +
+                                 $"OFFSET @offset " +
+                                 $"LIMIT @pageSize;";
             string countString = "SELECT COUNT(*) FROM TITLE " +
-                                "WHERE  " +
-                                " averagerating >= @rating " +
+                                 $"WHERE  ((COALESCE(@genre, '') = '' AND COALESCE(genres, '') = '')" +
+                                $"OR @genre = ANY(string_to_array(genres, ','))) " +
+                                " AND averagerating >= @rating " +
                                 "AND numvotes >= @reviews;";
 
 
@@ -84,7 +85,7 @@ namespace BooksTry.Controllers
                 conn.Open();
                 using (NpgsqlCommand countCommand = new NpgsqlCommand(countString, conn))
                 {
-                    // countCommand.Parameters.AddWithValue("@genre", string.IsNullOrEmpty(genre) ? (object)DBNull.Value : genre);
+                    countCommand.Parameters.AddWithValue("@genre", string.IsNullOrEmpty(genre) ? (object)DBNull.Value : genre);
                     countCommand.Parameters.AddWithValue("@rating", rating);
                     countCommand.Parameters.AddWithValue("@reviews", reviews);
                     int totalRecords = Convert.ToInt32(countCommand.ExecuteScalar());
@@ -92,6 +93,11 @@ namespace BooksTry.Controllers
 
                     using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
+                        command.Parameters.AddWithValue("@genre", string.IsNullOrEmpty(genre) ? (object)DBNull.Value : genre);
+                        command.Parameters.AddWithValue("@offset", offset);
+                        command.Parameters.AddWithValue("@pageSize", pageSize);
+                        command.Parameters.AddWithValue("@rating", rating);
+                        command.Parameters.AddWithValue("@reviews", reviews);
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Title> result = new List<Title>();
