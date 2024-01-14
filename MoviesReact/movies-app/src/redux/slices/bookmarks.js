@@ -53,11 +53,11 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export function getBookmarks(pageNumber) {
+export function getBookmarks(pageNumber,userId) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get(`/api/cast?page=${pageNumber}`, {
+      const response = await axios.get(`/api/bookmark/${userId}?page=${pageNumber}`, {
         withCredentials: true,
       });
       console.log(response);

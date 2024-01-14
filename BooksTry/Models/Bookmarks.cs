@@ -11,13 +11,14 @@ namespace BooksTry.Models
         public int UserId { get; set; }
         public string TitleId { get; set; }
         public string NCost { get; set; }
-
-        public Bookmarks(int id, int userId, string titleId, string nCost)
+        public string Name { get; set; }
+        public Bookmarks(int id, int userId, string titleId, string nCost, string name)
         {
             Id = id;
             UserId = userId;
             TitleId = titleId;
             NCost = nCost;
+            Name = name;
         }
 
         public Bookmarks()

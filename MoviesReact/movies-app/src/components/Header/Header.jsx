@@ -56,6 +56,9 @@ function Header() {
             <Button color="inherit" component={Link} to="/profile">
               Profile
             </Button>
+            <Button color="inherit" component={Link} to="/bookmarks">
+              Bookmarks
+            </Button>
           </>
         )}
       </Toolbar>

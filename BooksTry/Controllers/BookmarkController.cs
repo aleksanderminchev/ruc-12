@@ -21,13 +21,14 @@ namespace BooksTry.Controllers
             int userId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
             string titleId = reader.IsDBNull(2) ? "" : reader.GetString(2);
             string nconst = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            string name = reader.IsDBNull(4) ? "" : reader.GetString(4);
             Bookmarks item = new Bookmarks()
             {
                 Id = id,
                 UserId = userId,
                 TitleId = titleId,
                 NCost = nconst,
-
+                Name = name
             };
 
             return item;
@@ -38,8 +39,22 @@ namespace BooksTry.Controllers
         public PaginatedResult<Bookmarks> Get(int id, int page = 1, int pageSize = 30)
         {
             int offset = (page - 1) * pageSize;
-            string selectString = $"SELECT * FROM bookmarks where user_id = @id OFFSET {offset} LIMIT {pageSize} ;";
-            string countString = "SELECT COUNT(*) FROM bookmarks where user_id = @id;";
+            string selectString = "SELECT b.*, " +
+                     "CASE " +
+                     "    WHEN b.titleid IS NOT NULL THEN t.primarytitle " +
+                     "    WHEN b.nconst IS NOT NULL THEN n.primaryname " +
+                     "END AS name " +
+                     "FROM bookmarks b " +
+                    "LEFT JOIN names n ON b.nconst = n.nconst " +
+                     "LEFT JOIN title t ON b.titleid = t.titleid " +
+                     "WHERE b.user_id = @id " +
+                     "OFFSET @offset " +
+                     "LIMIT @pageSize;";
+            string countString = "SELECT COUNT(*) " +
+                    "FROM bookmarks b " +
+                    "LEFT JOIN names n ON b.nconst = n.nconst " +
+                    "LEFT JOIN title t ON b.titleid = t.titleid " +
+                    "WHERE b.user_id = @id;";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
@@ -53,6 +68,8 @@ namespace BooksTry.Controllers
                     using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
+                        command.Parameters.AddWithValue("@offset", offset);
+                        command.Parameters.AddWithValue("@pageSize", pageSize);
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<Bookmarks> result = new List<Bookmarks>();

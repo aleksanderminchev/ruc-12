@@ -16,6 +16,7 @@ import SignUp from "./pages/auth/Signup";
 import UpdateAccount from "./pages/auth/UpdateAccount";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ViewActor from "./pages/ViewActor";
+import Bookmarks from "./components/Bookmarks/Bookmarks";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                   <Route path="/movie/:id" element={<ViewMovie />} />
                   <Route path="/actor/:id" element={<ViewActor />} />
                   <Route path="/movies" element={<MoviesList />} />
+                  <Route path="/bookmarks" element={<Bookmarks />} />
                   <Route path="/moviesList" element={<MoviesListRow />} />
                   <Route path="/signUp" element={<SignUp />} />
                   <Route path="/login" element={<SignIn />} />
