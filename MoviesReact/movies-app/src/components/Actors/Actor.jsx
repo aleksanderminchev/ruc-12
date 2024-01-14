@@ -1,4 +1,6 @@
-function Actor({ actor }) {
+import MoviesListRow from "../../components/Movies/MoviesListRow";
+
+function Actor({ actor, isLoading, actorMovies }) {
   return actor ? (
     <div
       className="viewactor bg-dark"
@@ -27,7 +29,7 @@ function Actor({ actor }) {
                 paddingBottom: "10px",
               }}
             >
-              {actor.plot}
+              {actor.profession}
             </p>
 
             <div style={{ paddingBottom: "10px" }}>
@@ -42,6 +44,11 @@ function Actor({ actor }) {
           </div>
         </div>
       </div>
+      <MoviesListRow
+        movies={actorMovies}
+        isLoading={isLoading && !actor && actorMovies}
+        title="Known for: "
+      />
       {/* Read more link outside the container */}
     </div>
   ) : (

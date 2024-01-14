@@ -11,7 +11,7 @@ const initialState = {
     totalPages: Number,
     totalRecords: Number,
   },
-
+  actorMovies: [],
   actor: null,
 };
 
@@ -42,7 +42,11 @@ const slice = createSlice({
     },
     getActorSuccess(state, action) {
       state.isLoading = false;
-      state.actors = action.payload.data;
+      state.actor = action.payload.data;
+    },
+    getActorMoviesSuccess(state, action) {
+      state.isLoading = false;
+      state.actorMovies = action.payload.data;
     },
   },
 });
@@ -84,6 +88,32 @@ export function getActor(id) {
       console.log("SEND requst");
       console.log(response);
       dispatch(slice.actions.getActorSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+
+export function getActorMovies(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/cast/movies/${id}`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      dispatch(slice.actions.getActorMoviesSuccess(response));
       return true;
     } catch (error) {
       console.log(error);
