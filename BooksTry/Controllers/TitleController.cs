@@ -60,17 +60,33 @@ namespace BooksTry.Controllers
         }
 
         [HttpGet]
-        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30)
+        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "", int rating = 9, int reviews = 0)
         {
+            Console.WriteLine(rating);
+            Console.WriteLine(reviews);
             int offset = (page - 1) * pageSize;
-            string selectString = $"SELECT * FROM TITLE OFFSET {offset} LIMIT {pageSize};";
-            string countString = "SELECT COUNT(*) FROM TITLE;";
+            string selectString = "SELECT * FROM TITLE " +
+                                 $"WHERE  " +
+                                 $" averagerating >= {rating} " +
+                                 $"AND numvotes >= {reviews} " +
+                                 $"OFFSET {offset} " +
+                                 $"LIMIT {pageSize};";
+            Console.WriteLine(selectString);
+            string countString = "SELECT COUNT(*) FROM TITLE " +
+                                "WHERE  " +
+                                " averagerating >= @rating " +
+                                "AND numvotes >= @reviews;";
+
+
 
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
                 using (NpgsqlCommand countCommand = new NpgsqlCommand(countString, conn))
                 {
+                    // countCommand.Parameters.AddWithValue("@genre", string.IsNullOrEmpty(genre) ? (object)DBNull.Value : genre);
+                    countCommand.Parameters.AddWithValue("@rating", rating);
+                    countCommand.Parameters.AddWithValue("@reviews", reviews);
                     int totalRecords = Convert.ToInt32(countCommand.ExecuteScalar());
                     int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 

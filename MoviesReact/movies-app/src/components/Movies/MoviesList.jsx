@@ -18,9 +18,12 @@ export default function MoviesList() {
   const navigate = useNavigate();
   const { movies, isLoading } = useSelector((state) => state.movie);
   const [page, setPages] = useState(1);
+  const [genre, setGenre] = useState('');
+  const [rating, setRating] = useState(9);
+  const [reviews, setReviews] = useState(0);
   useEffect(() => {
-    dispatch(getMovies(page));
-  }, [page, dispatch]);
+    dispatch(getMovies(page, genre, rating, reviews));
+  }, [page, dispatch, genre, rating, reviews]);
   return (
     <Grid container direction={"row"}>
       <Grid item xs={2}>
