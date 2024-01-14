@@ -60,22 +60,20 @@ namespace BooksTry.Controllers
         }
 
         [HttpGet]
-        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "Comedy", int rating = 9, int reviews = 0)
+        public PaginatedResult<Title> Get(int page = 1, int pageSize = 30, string genre = "", int rating = 9, int reviews = 0)
         {
-            Console.WriteLine(genre);
 
             int offset = (page - 1) * pageSize;
             string selectString = "SELECT * FROM TITLE " +
-                                 $"WHERE  ((COALESCE( @genre, '') = '' AND COALESCE(genres, '') = '')" +
-                                $"OR @genre = ANY(string_to_array(genres, ','))) " +
-                                 $" AND averagerating >= @rating " +
-                                 $"AND numvotes >= @reviews " +
-                                 $"OFFSET @offset " +
-                                 $"LIMIT @pageSize;";
+                                 "WHERE ((COALESCE(@genre, '') = '' OR @genre IS NULL) OR @genre = ANY(string_to_array(genres, ','))) " +
+                                 "AND averagerating >= @rating " +
+                                 "AND numvotes >= @reviews " +
+                                 "OFFSET @offset " +
+                                 "LIMIT @pageSize;";
+
             string countString = "SELECT COUNT(*) FROM TITLE " +
-                                 $"WHERE  ((COALESCE(@genre, '') = '' AND COALESCE(genres, '') = '')" +
-                                $"OR @genre = ANY(string_to_array(genres, ','))) " +
-                                " AND averagerating >= @rating " +
+                                "WHERE ((COALESCE(@genre, '') = '' OR @genre IS NULL) OR @genre = ANY(string_to_array(genres, ','))) " +
+                                "AND averagerating >= @rating " +
                                 "AND numvotes >= @reviews;";
 
 

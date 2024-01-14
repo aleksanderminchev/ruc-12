@@ -18,9 +18,14 @@ export default function MoviesList() {
   const navigate = useNavigate();
   const { movies, isLoading } = useSelector((state) => state.movie);
   const [page, setPages] = useState(1);
-  const [genre, setGenre] = useState('');
-  const [rating, setRating] = useState(9);
+  const [genre, setGenre] = useState("");
+  const [rating, setRating] = useState(0);
   const [reviews, setReviews] = useState(0);
+  const applayFiltersMovies = (genre, rating, reviews) => {
+    setGenre(genre);
+    setRating(rating);
+    setReviews(reviews);
+  };
   useEffect(() => {
     dispatch(getMovies(page, genre, rating, reviews));
   }, [page, dispatch, genre, rating, reviews]);
@@ -28,7 +33,7 @@ export default function MoviesList() {
     <Grid container direction={"row"}>
       <Grid item xs={2}>
         <div className="col-md-10">
-          <FilterBar forActor={false} />
+          <FilterBar forActor={false} applyFiltersMovie={applayFiltersMovies} />
         </div>
       </Grid>
       <Grid item xs={10}>
