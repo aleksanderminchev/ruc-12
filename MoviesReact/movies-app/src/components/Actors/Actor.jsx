@@ -1,6 +1,6 @@
 import MoviesListRow from "../../components/Movies/MoviesListRow";
-
-function Actor({ actor, isLoading, actorMovies }) {
+import { Button } from "@mui/material";
+function Actor({ user, actor, isLoading, actorMovies, bookmarkActor }) {
   return actor ? (
     <div
       className="viewactor bg-dark"
@@ -44,8 +44,22 @@ function Actor({ actor, isLoading, actorMovies }) {
           </div>
         </div>
       </div>
+      {user ? (
+        <Button
+          sx={{ marginLeft: "5%", marginTop: "5%" }}
+          size="large"
+          variant="contained"
+          onClick={() => {
+            bookmarkActor(actor.nCost, user.userId);
+          }}
+        >
+          Bookmark
+        </Button>
+      ) : (
+        <></>
+      )}
       <MoviesListRow
-        movies={actorMovies}
+        movies={actorMovies ? actorMovies : []}
         isLoading={isLoading && !actor && actorMovies}
         title="Known for: "
       />
