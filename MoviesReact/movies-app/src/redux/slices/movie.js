@@ -94,11 +94,11 @@ export function getMovie(id) {
     }
   };
 }
-export function getMovies(pageNumber) {
+export function getMovies(pageNumber, genre, rating, reviews) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get(`/api/title?page=${pageNumber}`, {
+      const response = await axios.get(`/api/title?page=${pageNumber}&genre=${genre}&rating=${rating}&reviews=${reviews}`, {
         withCredentials: true,
       });
       console.log(response);

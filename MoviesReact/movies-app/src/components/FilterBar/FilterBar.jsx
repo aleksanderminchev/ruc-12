@@ -1,7 +1,8 @@
 // FilterBar.js
-import React from "react";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+const FilterBar = ({ forActor, applyFilters }) => {
 
-const FilterBar = ({ forActor }) => {
   return (
     <>
       {forActor ? (
@@ -77,7 +78,14 @@ const FilterBar = ({ forActor }) => {
             </select>
           </div>
           <div>
-            <button className="btn btn-primary btn-lg w-100">Apply</button>
+            <Button
+              onClick={() => {
+                applyFilters(genre, rating, reviews);
+              }}
+              className="btn btn-primary btn-lg w-100"
+            >
+              Apply
+            </Button>
           </div>
         </div>
       )}
