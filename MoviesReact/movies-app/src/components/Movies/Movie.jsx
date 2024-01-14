@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getMovie } from "../../redux/slices/movie";
+import { getMovie, bookMarkMovie } from "../../redux/slices/movie";
 import { useSelector, useDispatch } from "../../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
 import MovieTest from "./MovieTest";
@@ -10,9 +10,20 @@ function ViewMovie() {
   const { id } = useParams();
   console.log(id);
   const { movie, isLoading } = useSelector((state) => state.movie);
-  console.log(isLoading);
-  console.log(!movie);
-  console.log(movie);
+  const { user } = useSelector((state) => state.user);
+
+  const handleBookmarkMovie = async (movie_id, user_id) => {
+    try {
+      const response = await dispatch(bookMarkMovie(movie_id, user_id));
+      if (response) {
+        console.log("Success");
+      } else {
+        console.log("Failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     if (id) {
       dispatch(getMovie(id));
@@ -33,7 +44,7 @@ function ViewMovie() {
     </Box>
   ) : (
     <>
-      <MovieTest movie={movie} />
+      <MovieTest movie={movie} boomarkMovie={handleBookmarkMovie} user={user} />
     </>
   );
 }

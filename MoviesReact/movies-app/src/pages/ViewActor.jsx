@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getActor, getActorMovies } from "../redux/slices/actor";
+import { bookMarkActor, getActor, getActorMovies } from "../redux/slices/actor";
 import { useSelector, useDispatch } from "../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
 import Actor from "../components/Actors/Actor";
@@ -10,9 +10,21 @@ function ViewActor() {
   const { id } = useParams();
   console.log(id);
   const { actor, actorMovies, isLoading } = useSelector((state) => state.actor);
-  console.log(isLoading);
-  console.log(!actor);
-  console.log(actor);
+  const { user } = useSelector((state) => state.user);
+
+
+  const handleBookmarkActor = async (movie_id, user_id) => {
+    try {
+      const response = await dispatch(bookMarkActor(movie_id, user_id));
+      if (response) {
+        console.log("Success");
+      } else {
+        console.log("Failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     if (id) {
       dispatch(getActor(id));
@@ -34,7 +46,13 @@ function ViewActor() {
     </Box>
   ) : (
     <>
-      <Actor actor={actor} actorMovies={actorMovies} isLoading={isLoading} />
+      <Actor
+        user={user}
+        actor={actor}
+        actorMovies={actorMovies}
+        isLoading={isLoading}
+        bookmarkActor={handleBookmarkActor}
+      />
     </>
   );
 }

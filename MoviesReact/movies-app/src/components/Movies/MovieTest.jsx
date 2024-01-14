@@ -1,4 +1,6 @@
-function MovieTest({ movie }) {
+import { Button } from "@mui/material";
+
+function MovieTest({ movie, boomarkMovie, user }) {
   return movie ? (
     <div
       className="viewmovie bg-dark"
@@ -7,7 +9,7 @@ function MovieTest({ movie }) {
         position: "relative",
       }}
     >
-      <div className="container mt-5" >
+      <div className="container mt-5">
         <div className="row">
           <div className="col-md-4">
             <img
@@ -49,6 +51,21 @@ function MovieTest({ movie }) {
           </div>
         </div>
       </div>
+      {user ? (
+        <Button
+        sx={{marginLeft:'5%',marginTop:'5%'}}
+          size="large"
+          variant="contained"
+          onClick={() => {
+            boomarkMovie(movie.titleID, user.userId);
+          }}
+        >
+          Bookmark
+        </Button>
+      ) : (
+        <></>
+      )}
+
       {/* Read more link outside the container */}
     </div>
   ) : (

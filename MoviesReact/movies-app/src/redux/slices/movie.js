@@ -119,6 +119,34 @@ export function getMovies(pageNumber) {
     }
   };
 }
+export function bookMarkMovie(movie_id, user_id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.post(
+        `/api/bookmark/save`,
+        { TitleId: movie_id, UserId: user_id },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function getMoviesNewest() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
