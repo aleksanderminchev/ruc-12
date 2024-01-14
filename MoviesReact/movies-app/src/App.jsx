@@ -8,12 +8,14 @@ import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./redux/store";
 import ScrollToTop from "./components/scroll-to-top";
 import Actors from "./components/Actors/Actors";
+import ViewMovie from "./components/Movies/Movie";
 import MoviesList from "./components/Movies/MoviesList";
 import MoviesListRow from "./components/Movies/MoviesListRow";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/Signup";
 import UpdateAccount from "./pages/auth/UpdateAccount";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ViewActor from "./pages/ViewActor";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
               <div style={{ margin: "20px" }}>
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/movie/:id" element={<ViewMovie />} />
+                  <Route path="/actor/:id" element={<ViewActor />} />
                   <Route path="/movies" element={<MoviesList />} />
                   <Route path="/moviesList" element={<MoviesListRow />} />
                   <Route path="/signUp" element={<SignUp />} />

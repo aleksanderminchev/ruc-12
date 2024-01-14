@@ -40,6 +40,10 @@ const slice = createSlice({
         totalRecords: action.payload.data.totalRecords,
       };
     },
+    getActorSuccess(state, action) {
+      state.isLoading = false;
+      state.actors = action.payload.data;
+    },
   },
 });
 
@@ -54,6 +58,32 @@ export function getActors(pageNumber) {
       });
       console.log(response);
       dispatch(slice.actions.getActorsSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function getActor(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/cast/${id}`, {
+        withCredentials: true,
+      });
+      console.log("SEND requst");
+      console.log(response);
+      dispatch(slice.actions.getActorSuccess(response));
       return true;
     } catch (error) {
       console.log(error);

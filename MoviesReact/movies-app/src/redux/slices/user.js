@@ -34,6 +34,11 @@ const slice = createSlice({
       state.isLoading = false;
       state.user = action.payload.data;
     },
+    logOut(state, action) {
+      state.error = null;
+      state.isLoading = false;
+      state.user = null;
+    },
   },
 });
 
@@ -81,7 +86,6 @@ export function signUp(email, password, firstName, lastName, repeatPassword) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-
       const response = await axios.post(
         "http://localhost:8000/api/user/signUp",
         {
@@ -89,7 +93,7 @@ export function signUp(email, password, firstName, lastName, repeatPassword) {
           FirstName: firstName,
           LastName: lastName,
           Pass: password,
-          repeatPassword,
+          repeatPassword: repeatPassword,
         }
       );
       if (response.status === 404) {
@@ -114,7 +118,71 @@ export function signUp(email, password, firstName, lastName, repeatPassword) {
     }
   };
 }
+export function logout() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      dispatch(slice.actions.logOut());
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 
+export function updateProfile(
+  userId,
+  email,
+  password,
+  firstName,
+  lastName,
+  repeatPassword
+) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/user/${userId}`,
+        {
+          Email: email,
+          FirstName: firstName,
+          LastName: lastName,
+          Pass: password,
+          repeatPassword: repeatPassword,
+        }
+      );
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        dispatch(slice.actions.getUserSuccess(response));
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function editUser(form) {
   const data_to_update_user = {
     password: form.confirmNewPassword,

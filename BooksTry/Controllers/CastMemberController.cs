@@ -22,15 +22,15 @@ namespace BooksTry.Controllers
             string birthYear = reader.IsDBNull(2) ? "" : reader.GetString(2);
             string deathYear = reader.IsDBNull(3) ? "" : reader.GetString(3);
             string profession = reader.IsDBNull(4) ? "" : reader.GetString(4);
-            string knownMovies = reader.IsDBNull(5) ? "" : reader.GetString(5); 
+            string knownMovies = reader.IsDBNull(5) ? "" : reader.GetString(5);
             CastMember item = new CastMember()
             {
-                NCost =ncost,
+                NCost = ncost,
                 FullName = fullName,
-                BirthYear=birthYear,
-                DeathYear=deathYear,
-                Profession =profession,
-                KnownMovies =knownMovies,
+                BirthYear = birthYear,
+                DeathYear = deathYear,
+                Profession = profession,
+                KnownMovies = knownMovies,
             };
 
             return item;
@@ -75,14 +75,16 @@ namespace BooksTry.Controllers
                 }
             }
         }
-        // GET: api/SingleCastMember
+        // GET: api/cast/{id}
         [Route("{id}")]
         [HttpGet]
-        public CastMember Get(int id)
+        public CastMember Get(string id)
         {
             try
             {
-                string selectString = "select * from names where ncost = @id";
+                string new_id = "nm" + id;
+                Console.WriteLine(new_id);
+                string selectString = "select * from names where nconst = @id";
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();

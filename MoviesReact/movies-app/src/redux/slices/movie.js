@@ -55,9 +55,9 @@ const slice = createSlice({
       state.mostPopularMovies = action.payload.data;
     },
     // GET User
-    getUserSuccess(state, action) {
+    getMovieSuccess(state, action) {
       state.isLoading = false;
-      state.user = action.payload.data;
+      state.movie = action.payload.data;
     },
     // DELETE User
     deleteCustomerSuccess(state, action) {
@@ -68,7 +68,32 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-
+export function getMovie(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/title/${id}`, {
+        withCredentials: true,
+      });
+      console.log("SEND requst");
+      console.log(response);
+      dispatch(slice.actions.getMovieSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function getMovies(pageNumber) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());

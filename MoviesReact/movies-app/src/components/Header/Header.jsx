@@ -6,8 +6,9 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
-
+import { logout } from "../../redux/slices/user";
 function Header() {
+  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const { user, isLoading } = useSelector((state) => state.user);
@@ -42,7 +43,14 @@ function Header() {
           </Button>
         ) : (
           <>
-            <Button color="inherit" component={Link} to="/">
+            <Button
+              onClick={() => {
+                dispatch(logout());
+              }}
+              color="inherit"
+              component={Link}
+              to="/"
+            >
               Logout
             </Button>
             <Button color="inherit" component={Link} to="/profile">

@@ -226,7 +226,11 @@ namespace BooksTry.Controllers
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] User value)
         {
-            string updateString = "UPDATE USERS SET FirstName=@FirstName,FirstName=@LastName, Email=@Email where UserId = @id; ";
+            Console.WriteLine(value.Email);
+            Console.WriteLine(value.FirstName);
+            Console.WriteLine(value.LastName);
+            Console.WriteLine(value.Email);
+            string updateString = "UPDATE USERS SET first_name=@FirstName,last_name=@LastName, email=@Email, password_hashed=@Pass where user_id = @id; ";
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
@@ -236,6 +240,7 @@ namespace BooksTry.Controllers
                     command.Parameters.AddWithValue("@FirstName", value.FirstName);
                     command.Parameters.AddWithValue("@LastName", value.LastName);
                     command.Parameters.AddWithValue("@Email", value.Email);
+                    command.Parameters.AddWithValue("@Pass", value.Pass);
                     int rowAffected = command.ExecuteNonQuery();
                     return rowAffected;
                 }

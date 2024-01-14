@@ -222,12 +222,13 @@ namespace BooksTry.Controllers
         }
         // GET: api/Title/5
         //[HttpGet("{id}", Name = "Get")]
-        [Route("{id:int}")]
-        public Title Get(int id)
+        [Route("{id}")]
+        public Title Get(string id)
         {
             try
             {
-                string selectString = "select * from TITLE where TitleId = @id";
+                string selectString = "select * from TITLE where titleid = @id";
+                Console.WriteLine(id);
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
@@ -236,8 +237,10 @@ namespace BooksTry.Controllers
                         command.Parameters.AddWithValue("@id", id);
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
+                            Console.WriteLine("wrbw");
                             if (reader.HasRows)
                             {
+
                                 reader.Read();
                                 return ReadItem(reader);
                             }
@@ -249,8 +252,10 @@ namespace BooksTry.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
+
                 //future handling exceptions
                 return null;
             }
@@ -359,7 +364,7 @@ namespace BooksTry.Controllers
 
         // GET: api/Title/Horror
         //[HttpGet("{genre}", Name = "Get")]
-        [Route("{genre}")]
+        [Route("/Genre/{genre}")]
         public IEnumerable<Title> GetTitlesByGenre(String genre)
         {
             try
@@ -532,34 +537,6 @@ namespace BooksTry.Controllers
             }
         }
 
-        [Route("allpaidtitles")]
-        public int GetAllPaidTitles()
-        {
-            try
-            {
-                string selectString = "select * from TITLE where Price != '0'";
-                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
-                {
-                    conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
-                    {
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
-                        {
-                            List<Title> result = new List<Title>();
-                            while (reader.Read())
-                            {
-                                Title item = ReadItem(reader);
-                                result.Add(item);
-                            }
-                            return result.Count;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-        }
+
     }
 }

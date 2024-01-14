@@ -110,7 +110,7 @@ function Actors() {
                               : "Still Alive"}
                           </p>
                           <Link
-                            to="#"
+                            to={`/actor/${actor.nCost}`}
                             className="btn btn-primary mt-3"
                             style={{ fontSize: "18px" }}
                           >

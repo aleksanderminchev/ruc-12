@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
 import { getMovies } from "../../redux/slices/movie";
 import FilterBar from "../FilterBar/FilterBar";
@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 export default function MoviesList() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { movies, isLoading } = useSelector((state) => state.movie);
   const [page, setPages] = useState(1);
   useEffect(() => {
@@ -57,6 +58,9 @@ export default function MoviesList() {
               return (
                 <Grid key={index} item xs={3}>
                   <Card
+                    onClick={() => {
+                      navigate(`/movie/${movie.titleID}`);
+                    }}
                     sx={{
                       paddingTop: "10px",
                       paddingLeft: "10px",
