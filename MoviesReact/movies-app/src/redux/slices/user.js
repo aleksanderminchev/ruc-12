@@ -11,7 +11,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: "customer",
+  name: "user",
   initialState,
   reducers: {
     // START LOADING
@@ -37,7 +37,7 @@ const slice = createSlice({
     },
     getSearchSuccess(state, action) {
       state.isLoading = false;
-      state.userSearches = action.payload.data;
+      state.userSearches = action.payload;
     },
     logOut(state, action) {
       state.error = null;
@@ -155,10 +155,11 @@ export function getSearches(userid) {
       if (response.status === 404) {
         throw new Error("User not found");
       } else {
-        console.log(response);
-        dispatch(
-          slice.actions.getSearchSuccess(response.map((a) => a.SearchText))
-        );
+        const array = response.data.map((a) => a.searchText);
+        console.log(array);
+        console.log("array");
+
+        dispatch(slice.actions.getSearchSuccess( array ));
         return true;
       }
     } catch (error) {

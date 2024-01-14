@@ -16,6 +16,7 @@ function Header() {
   const dispatch = useDispatch();
   const { user, userSearches, isLoading } = useSelector((state) => state.user);
   const [searchText, setSearchText] = useState("");
+  console.log(userSearches);
   useEffect(() => {
     if (user) {
       dispatch(getSearches(user.userId));
@@ -50,6 +51,7 @@ function Header() {
         <Button color="inherit" component={Link} to="/actors">
           Actors
         </Button>
+
         <Autocomplete
           sx={{ width: "20%" }}
           freeSolo
