@@ -5,7 +5,12 @@ import axios from "../../utils/axios";
 const initialState = {
   isLoading: false,
   error: null,
-  movies: [],
+  movies: {
+    movies: [],
+    pageSize: Number,
+    totalPages: Number,
+    totalRecords: Number,
+  },
   newestMovies: [],
   currentPopular: [],
   mostPopularMovies: [],
@@ -13,7 +18,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: "customer",
+  name: "movie",
   initialState,
   reducers: {
     // START LOADING
@@ -30,7 +35,12 @@ const slice = createSlice({
     // GET MOVIES
     getMoviesSuccess(state, action) {
       state.isLoading = false;
-      state.movies = action.payload.data;
+      state.movies = {
+        movies: action.payload.data.data,
+        pageSize: action.payload.data.pageSize,
+        totalPage: action.payload.data.totalPages,
+        totalRecords: action.payload.data.totalRecords,
+      };
     },
     getMoviesNewestSuccess(state, action) {
       state.isLoading = false;
@@ -45,9 +55,9 @@ const slice = createSlice({
       state.mostPopularMovies = action.payload.data;
     },
     // GET User
-    getUserSuccess(state, action) {
+    getMovieSuccess(state, action) {
       state.isLoading = false;
-      state.user = action.payload.data;
+      state.movie = action.payload.data;
     },
     // DELETE User
     deleteCustomerSuccess(state, action) {
@@ -58,7 +68,32 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-
+export function getMovie(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/title/${id}`, {
+        withCredentials: true,
+      });
+      console.log("SEND requst");
+      console.log(response);
+      dispatch(slice.actions.getMovieSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function getMovies(pageNumber) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
@@ -68,6 +103,34 @@ export function getMovies(pageNumber) {
       });
       console.log(response);
       dispatch(slice.actions.getMoviesSuccess(response));
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function bookMarkMovie(movie_id, user_id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.post(
+        `/api/bookmark/save`,
+        { TitleId: movie_id, UserId: user_id },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
       return true;
     } catch (error) {
       console.log(error);

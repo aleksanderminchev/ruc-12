@@ -34,8 +34,8 @@ const slice = createSlice({
       state.isLoading = false;
       state.user = action.payload.data;
     },
-    // DELETE User
-    deleteCustomerSuccess(state, action) {
+    logOut(state, action) {
+      state.error = null;
       state.isLoading = false;
       state.user = null;
     },
@@ -44,36 +44,26 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export function getUsers() {
+export function login(email, password) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/api/users");
-      dispatch(slice.actions.getUsersSuccess(response.data));
-      return true;
-    } catch (error) {
-      console.log(error);
-      let errorMessage = "";
-      if (error?.errors?.json._schema) {
-        errorMessage = error?.errors?.json._schema[0];
-      } else if (error?.errors?.json) {
-        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
-      } else {
-        errorMessage = error?.message;
-      }
-      dispatch(slice.actions.hasError(errorMessage));
-      return false;
-    }
-  };
-}
-export function getUser(id) {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await axios.get(`/api/users/${id}`);
+      console.log(email);
+      console.log(password);
+      const credentials = btoa(`${email}:${password}`);
+      const response = await axios.post(
+        "http://localhost:8000/api/user/login",
+        {},
+        {
+          headers: {
+            Authorization: `Basic ${credentials}`,
+          },
+        }
+      );
       if (response.status === 404) {
         throw new Error("User not found");
       } else {
+        console.log(response);
         dispatch(slice.actions.getUserSuccess(response));
         return true;
       }
@@ -92,7 +82,107 @@ export function getUser(id) {
     }
   };
 }
+export function signUp(email, password, firstName, lastName, repeatPassword) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/user/signUp",
+        {
+          Email: email,
+          FirstName: firstName,
+          LastName: lastName,
+          Pass: password,
+          repeatPassword: repeatPassword,
+        }
+      );
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        dispatch(slice.actions.getUserSuccess(response));
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
+export function logout() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      dispatch(slice.actions.logOut());
+      return true;
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 
+export function updateProfile(
+  userId,
+  email,
+  password,
+  firstName,
+  lastName,
+  repeatPassword
+) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/user/${userId}`,
+        {
+          Email: email,
+          FirstName: firstName,
+          LastName: lastName,
+          Pass: password,
+          repeatPassword: repeatPassword,
+        }
+      );
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        dispatch(slice.actions.getUserSuccess(response));
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function editUser(form) {
   const data_to_update_user = {
     password: form.confirmNewPassword,
@@ -103,7 +193,7 @@ export function editUser(form) {
     dispatch(slice.actions.startLoading());
     try {
       // Note that user is determined on their current Token, so only the logged in user can change their own data.
-      const response = await axios.put(`/api/me`, {
+      const response = await axios.put(`/api/user`, {
         ...data_to_update_user,
       });
       dispatch(slice.actions.getUserSuccess(response));
@@ -122,36 +212,4 @@ export function editUser(form) {
   };
 }
 
-export function resendEmailVerification(email) {
-  return async (dispatch) => {
-    try {
-      // console.log(localStorage.getItem('accessToken'));
-      const response = await axios.post(
-        "/api/resendEmail",
-        { email: email },
-        {
-          headers: { "Admin-Recaptch-Overwride": true },
-          withCredentials: true,
-        }
-      );
-      if (response.status === 200) {
-        return true; //
-      } else {
-        return false; //
-      }
-    } catch (error) {
-      console.log(error);
-      let errorMessage = "";
-      if (error?.errors?.json._schema) {
-        errorMessage = error?.errors?.json._schema[0];
-      } else if (error?.errors?.json) {
-        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
-      } else {
-        errorMessage = error?.message;
-      }
-      dispatch(slice.actions.hasError(errorMessage));
-      return false;
-    }
-  };
-}
 // ----------------------------------------------------------------------
