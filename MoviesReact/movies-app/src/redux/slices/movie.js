@@ -26,7 +26,10 @@ const slice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-
+    // set Filter
+    setFilter: (state, action) => {
+      state.filters[action.payload.filterType] = action.payload.value;
+    },
     // HAS ERROR
     hasError(state, action) {
       state.isLoading = false;
@@ -68,6 +71,7 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+export const { setFilter } = slice.actions;
 export function getMovie(id) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
