@@ -15,10 +15,11 @@ import {
 function Bookmarks() {
   const dispatch = useDispatch();
   const { bookmarks, isLoading } = useSelector((state) => state.bookmark);
+  const { user } = useSelector((state) => state.user);
   const [page, setPages] = useState(1);
   useEffect(() => {
-    dispatch(getBookmarks(page));
-  }, [page, dispatch]);
+    dispatch(getBookmarks(user.userId, page));
+  }, [user, page, dispatch]);
   console.log(bookmarks);
   return (
     <div
@@ -68,56 +69,13 @@ function Bookmarks() {
                 <div className="row row-cols-3">
                   {bookmarks.bookmarks.map((bookmark, index) => (
                     <div className="col-lg-3" key={index}>
-                      <div
-                        className="card mb-3"
-                        style={{ height: "90%", minHeight: "90%" }}
+                      <Link
+                        to={`/bookmark/${bookmark.nCost}`}
+                        className="btn btn-primary mt-3"
+                        style={{ fontSize: "18px" }}
                       >
-                        <div className="card-body">
-                          <h5
-                            className="card-title"
-                            style={{
-                              fontSize: "40px",
-                              color: "black",
-                              fontFamily: "Trajan Pro, serif",
-                            }}
-                          >
-                            {bookmark.fullName}
-                          </h5>
-                          <p
-                            className="card-text"
-                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
-                          >
-                            {bookmark.profession}
-                          </p>
-                          <p
-                            className="card-text"
-                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
-                          >
-                            Aged:
-                            {bookmark.deathYear !== "    "
-                              ? parseInt(bookmark.deathYear) -
-                                parseInt(bookmark.birthYear)
-                              : new Date().getFullYear() -
-                                parseInt(bookmark.birthYear)}
-                          </p>
-                          <p
-                            className="card-text"
-                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
-                          >
-                            {bookmark.birthYear} -{" "}
-                            {bookmark.deathYear !== "    "
-                              ? bookmark.deathYear
-                              : "Still Alive"}
-                          </p>
-                          <Link
-                            to={`/bookmark/${bookmark.nCost}`}
-                            className="btn btn-primary mt-3"
-                            style={{ fontSize: "18px" }}
-                          >
-                            Read More
-                          </Link>
-                        </div>
-                      </div>
+                        Read More
+                      </Link>
                     </div>
                   ))}
                 </div>
