@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
 import { getBookmarks } from "../../redux/slices/bookmarks";
 import FilterBar from "../FilterBar/FilterBar";
-import InteractiveStarRating from './StarRating'; // Adjust the path based on your project structure
 
 import {
   Grid,
@@ -23,7 +22,7 @@ function Bookmarks() {
     dispatch(getBookmarks(user.userId, page));
   }, [user, page, dispatch]);
   console.log(bookmarks);
-  
+
   return (
     <div
       style={{

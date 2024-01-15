@@ -24,7 +24,9 @@ function Header() {
   }, [user, dispatch]);
   const handleSearch = async (text) => {
     try {
-      const response = await dispatch(search(searchText, user.userId));
+      const response = await dispatch(
+        search(searchText, user ? user.userId : 10)
+      );
       if (response) {
         navigate("/searchResults");
       } else {
@@ -40,24 +42,59 @@ function Header() {
           border: "1px solid #000",
           background: "gray", // Set this to the color of your navbar
           boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-          height: '77px',
-          padding: '20px',
+          height: "77px",
+          padding: "20px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <div style={{ marginRight: 'auto' }}>
-        <Button color="inherit" component={Link} to="/" sx={{ fontSize: "3.1rem", color: "yellow", fontWeight: "bold", fontFamily: 'Poppins', marginRight: '8px' }}>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/"
+          sx={{
+            fontSize: "3.1rem",
+            color: "yellow",
+            fontWeight: "bold",
+            fontFamily: "Poppins",
+            marginRight: "8px",
+          }}
+        >
           Film24
         </Button>
-        <Button color="inherit" component={Link} to="/" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif', marginRight: '2px'}}>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/"
+          sx={{
+            fontSize: "1.6rem",
+            color: "black",
+            fontFamily: "serif",
+            marginRight: "2px",
+          }}
+        >
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/movies" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif', marginRight: '2px'}}>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/movies"
+          sx={{
+            fontSize: "1.6rem",
+            color: "black",
+            fontFamily: "serif",
+            marginRight: "2px",
+          }}
+        >
           Movies
         </Button>
-        <Button color="inherit" component={Link} to="/actors" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif'}}>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/actors"
+          sx={{ fontSize: "1.6rem", color: "black", fontFamily: "serif" }}
+        >
           Actors
         </Button>
 

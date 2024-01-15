@@ -31,7 +31,18 @@ namespace BooksTry.Controllers
 
             return item;
         }
+        private SearchResult ReadItemSearchResults(NpgsqlDataReader reader)
+        {
+            string id = reader.IsDBNull(0) ? "" : reader.GetString(0);
+            string title = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            SearchResult item = new SearchResult()
+            {
+                Title = title,
+                Identifier = id,
+            };
 
+            return item;
+        }
         // GET ALL Paginated
         [Route("{id}")]
         [HttpGet]
@@ -72,8 +83,9 @@ namespace BooksTry.Controllers
                 Console.WriteLine(value.SearchText);
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
+
                     conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand("SELECT string_search( @search, @user_id)", conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand("SELECT * from string_search( @search, @user_id)", conn))
                     {
                         // Add parameters for the stored function
                         command.Parameters.AddWithValue("@user_id", value.UserId);
@@ -83,24 +95,17 @@ namespace BooksTry.Controllers
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             List<SearchResult> searchResults = new List<SearchResult>();
-
                             while (reader.Read())
                             {
-                                Console.Write("{0}\t{1} \n", reader[0], reader[1]);
-
-                                SearchResult result = new SearchResult
-                                {
-                                    Identifier = "",
-                                    Title = ""
-                                };
-
-                                searchResults.Add(result);
-
+                                SearchResult item = ReadItemSearchResults(reader);
+                                searchResults.Add(item);
 
                             }
+
                             return searchResults;
 
                         }
+
                     }
                 }
             }
