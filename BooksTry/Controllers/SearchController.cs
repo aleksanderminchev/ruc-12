@@ -79,7 +79,7 @@ namespace BooksTry.Controllers
         [HttpGet]
         public List<Search> Get(int id)
         {
-            string selectString = "select * from Search where user_id=@id LIMIT 5";
+            string selectString = "select * from search where user_id=@id ORDER BY created_at DESC LIMIT 5";
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
@@ -110,10 +110,12 @@ namespace BooksTry.Controllers
         {
             try
             {
+                Console.WriteLine(value.UserId);
+                Console.WriteLine(value.SearchText);
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand("SELECT string_search(@search, @user_id)", conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand("SELECT string_search( @search, @user_id)", conn))
                     {
                         // Add parameters for the stored function
                         command.Parameters.AddWithValue("@user_id", value.UserId);

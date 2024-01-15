@@ -24,9 +24,9 @@ function Header() {
   }, [user, dispatch]);
   const handleSearch = async (text) => {
     try {
-      const response = await dispatch(search(searchText));
+      const response = await dispatch(search(searchText, user.userId));
       if (response) {
-        navigate("/");
+        navigate("/searchResults");
       } else {
       }
     } catch (e) {
