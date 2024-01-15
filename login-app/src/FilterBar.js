@@ -1,4 +1,3 @@
-// FilterBar.js
 import React from "react";
 
 const FilterBar = () => {
@@ -28,7 +27,7 @@ const FilterBar = () => {
               {/* Add other rating options here */}
             </select>
           </div>
-          <div className="col-md-2">
+          <div className="col-md-2 space-between">
             <label htmlFor="reviews">Reviews:</label>
             <select className="form-select" id="reviews">
               <option value="all">All Reviews</option>
@@ -39,7 +38,7 @@ const FilterBar = () => {
             </select>
           </div>
           <div className="col-md-2 d-flex align-items-end">
-            <button className="btn btn-primary btn-lg  w-60">Apply</button>     
+            <button className="btn btn-primary btn-lg w-60 mt-3">Apply</button>
           </div>
         </div>
       </div>

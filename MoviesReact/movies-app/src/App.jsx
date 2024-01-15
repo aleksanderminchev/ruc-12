@@ -14,7 +14,6 @@ import MoviesListRow from "./components/Movies/MoviesListRow";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/Signup";
 import UpdateAccount from "./pages/auth/UpdateAccount";
-import "bootstrap/dist/css/bootstrap.min.css";
 import ViewActor from "./pages/ViewActor";
 
 function App() {

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
 import { getBookmarks } from "../../redux/slices/bookmark";
 import FilterBar from "../FilterBar/FilterBar";
+import InteractiveStarRating from './StarRating'; // Adjust the path based on your project structure
+
 import {
   Grid,
   Typography,
@@ -21,6 +23,7 @@ function Bookmarks() {
     dispatch(getBookmarks(user.userId, page));
   }, [user, page, dispatch]);
   console.log(bookmarks);
+  
   return (
     <div
       style={{
@@ -35,7 +38,7 @@ function Bookmarks() {
           }}
           siblingCount={2}
           boundaryCount={6}
-          sx={{ background: "grey", color: "grey" }}
+          sx={{ background: "black", color: "black" }}
           count={bookmarks.totalPage}
           color="primary"
           variant="outlined"

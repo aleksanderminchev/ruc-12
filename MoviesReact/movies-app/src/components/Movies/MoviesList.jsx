@@ -13,14 +13,17 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+
 export default function MoviesList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { movies, isLoading } = useSelector((state) => state.movie);
   const [page, setPages] = useState(1);
+
   useEffect(() => {
     dispatch(getMovies(page));
   }, [page, dispatch]);
+
   return (
     <Grid container direction={"row"}>
       <Grid item xs={2}>
@@ -29,18 +32,6 @@ export default function MoviesList() {
         </div>
       </Grid>
       <Grid item xs={10}>
-        <Pagination
-          onChange={(event, value) => {
-            setPages(value);
-          }}
-          siblingCount={2}
-          boundaryCount={6}
-          sx={{ background: "grey", color: "grey" }}
-          count={movies.totalPage}
-          color="primary"
-          variant="outlined"
-          shape="rounded"
-        />
         {isLoading ? (
           <Box
             sx={{
@@ -71,24 +62,30 @@ export default function MoviesList() {
                       backgroundColor: "#D9D9D9",
                     }}
                   >
-                    <Stack direction={"row"} rowGap={2} spacing={2}>
+                    <Stack direction={"row"} rowGap={1} spacing={1}>
                       <Box
                         component="img"
                         src={movie.poster}
                         sx={{ height: 300 }}
                         style={{
-                          maxWidth: "100%", // Ensure the image does not exceed the container width
-                          maxHeight: "70%", // Set the maximum height to fill 7/10 of the container
-                          objectFit: "cover", // Maintain aspect ratio and crop as needed
+                          maxWidth: "100%",
+                          maxHeight: "70%",
+                          objectFit: "cover",
                         }}
                         justifyContent={"space-between"}
                       />
                       <Stack direction={"column"} spacing={1}>
-                        <Typography variant="h4">
+                      <Typography
+                          variant="h4"
+                          sx={{
+                            fontFamily: "Poppins", // Set the desired font family
+                            // Add any other styles as needed
+                          }}
+                        >
                           {movie.primaryTitle}
                         </Typography>
                         <Typography>
-                          Description: {movie.plot.substring(0, 100)}...
+                          {/* Description: {movie.plot.substring(0, 100)}... */}
                         </Typography>
                       </Stack>
                     </Stack>
@@ -119,6 +116,25 @@ export default function MoviesList() {
             })}
           </Grid>
         )}
+        <Pagination
+          onChange={(event, value) => {
+            setPages(value);
+          }}
+          siblingCount={2}
+          boundaryCount={6}
+          sx={{
+            background: "grey",
+            color: "grey",
+            marginTop: "20px",
+            marginBottom: "20px",
+            fontSize: "34px", // Adjust the font size as needed
+            width: "100%",
+          }}
+          count={movies.totalPage}
+          color="primary"
+          variant="outlined"
+          shape="rounded"
+        />
       </Grid>
     </Grid>
   );

@@ -130,6 +130,8 @@ function Update() {
                 }}
                 className="btn btn-primary"
                 style={{ padding: "15px", fontSize: "18px" }}
+                variant="contained"
+                color="primary"
               >
                 Update Account
               </Button>

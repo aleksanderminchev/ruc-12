@@ -38,7 +38,7 @@ const FilterBar = ({ forActor }) => {
               {/* Add other review options here */}
             </select>
           </div>
-          <div className="rol-lg-12 ">
+          <div className="rol-lg-12 mt-3">
             <button className="btn btn-primary btn-lg w-100">Apply</button>
           </div>
         </div>
@@ -77,7 +77,7 @@ const FilterBar = ({ forActor }) => {
             </select>
           </div>
           <div>
-            <button className="btn btn-primary btn-lg w-100">Apply</button>
+            <button className="btn btn-primary btn-lg w-100 mt-3">Apply</button>
           </div>
         </div>
       )}

@@ -38,7 +38,7 @@ function Login() {
       <CircularProgress />
     </Box>
   ) : !user ? (
-    <div className="login">
+    <div className="login" style={{ backgroundColor: "black", color: "black"}}>
       <div className="template d-flex justify-content-center align-items-center vh-100 bg-primary bg-primary navbar navbar-expand-lg navbar-light bg-dark">
         <div
           className="form_container p-5 rounded bg-white"
@@ -76,11 +76,13 @@ function Login() {
                   handleLogin();
                 }}
                 style={{ padding: "15px", fontSize: "18px" }}
+                variant="contained"
+                color="primary"
               >
                 Log in
               </Button>
             </div>
-            <div className="mb-2">
+            <div className="mb-2 d-flex align-items-center">
               <input
                 type="checkbox"
                 className="custom-control custom-checkbox"
@@ -90,7 +92,7 @@ function Login() {
                 Remember me
               </label>
             </div>
-            <p className="text-end mt-2">
+            <p className="text-end mt-2 mb-0">
               Forgotten <a href="">Password?</a>
               <Link to="/signup" className="ms-2">
                 Sign up
