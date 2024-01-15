@@ -61,7 +61,7 @@ const FilterBar = ({ forActor, applyFiltersMovie, applyFiltersActor }) => {
               {/* Add other profession options here */}
             </select>
           </div>
-          <div className="rol-lg-12 ">
+          <div className="rol-lg-12 mt-3">
             <button
               className="btn btn-primary btn-lg w-100"
               onClick={handleApplyFiltersActors}
@@ -130,7 +130,7 @@ const FilterBar = ({ forActor, applyFiltersMovie, applyFiltersActor }) => {
           </div>
           <div>
             <button
-              className="btn btn-primary btn-lg w-100"
+              className="btn btn-primary btn-lg w-100 mt-3"
               onClick={handleApplyFilters}
             >
               Apply

@@ -1,9 +1,41 @@
+import React from 'react';
 import { Button } from "@mui/material";
 
 function MovieTest({ movie, boomarkMovie, user }) {
+  const [userRating, setUserRating] = React.useState(0);
+
+  const StarRating = ({ value, maxValue, onRate }) => {
+    const stars = [];
+
+    const handleStarClick = (starValue) => {
+      onRate(starValue);
+    };
+
+    for (let i = 1; i <= maxValue; i++) {
+      const starClassName = i <= value ? 'star-filled' : 'star-empty';
+      stars.push(
+        <span
+          key={i}
+          className={`star ${starClassName}`}
+          onClick={() => handleStarClick(i)}
+          style={{
+            fontSize: "40px", // Adjust the font size as per your requirement
+            marginRight: "5px", // Add spacing between stars if needed
+            cursor: user ? "pointer" : "default", // Make stars clickable only if user is logged in
+            color: i <= value ? "yellow" : "gray", // Change color based on selected rating
+          }}
+        >
+          &#9733;
+        </span>
+      );
+    }
+
+    return <div className="star-rating" style={{ display: "inline-block" }}>{stars}</div>;
+  };
+
   return movie ? (
     <div
-      className="viewmovie bg-dark"
+      className="viewmovie bg-gray"
       style={{
         minHeight: "100vh",
         position: "relative",
@@ -16,19 +48,28 @@ function MovieTest({ movie, boomarkMovie, user }) {
               src={movie ? movie.poster : ""}
               alt={movie ? movie.primaryTitle : ""}
               className="img-fluid"
+              style={{ width: "100%" }}
             />
           </div>
-          <div className="col-md-8 text-light">
-            <h2
-              style={{
-                fontSize: "55px",
-                color: "yellow",
-                fontFamily: "Trajan Pro, serif",
-                fontWeight: "bold",
-              }}
-            >
-              {movie.primaryTitle}
-            </h2>
+          <div className="col-md-8 text-light" style={{ position: 'relative' }}>
+          <h2
+            style={{
+              fontSize: "55px",
+              color: "yellow",
+              fontFamily: "Trajan Pro, serif",
+              fontWeight: "bold",
+              borderBottom: "1px solid white",
+              paddingBottom: "10px",
+              display: "flex",
+              justifyContent: "space-between", // Align stars to the right
+            }}
+          >
+            <span>{movie.primaryTitle}</span>
+            {user && <StarRating value={userRating} maxValue={5} onRate={setUserRating} />}
+          </h2>
+
+            {/* Add the interactive star rating component after the title */}
+            
             <p
               style={{
                 fontSize: "24px",
@@ -38,35 +79,27 @@ function MovieTest({ movie, boomarkMovie, user }) {
             >
               {movie.plot}
             </p>
-
-            <div style={{ paddingBottom: "10px" }}>
-              {/* Empty div for the white line */}
-            </div>
-
-            <div
-              style={{ borderBottom: "1px solid white", paddingBottom: "10px" }}
-            >
-              {/* Empty div for the white line */}
-            </div>
+            {/* Bookmark button */}
+            {user && (
+                <>
+                  <Button
+                    sx={{
+                      position: 'absolute',
+                      right: '30px',
+                    }}
+                    size="large"
+                    variant="contained"
+                    onClick={() => {
+                      boomarkMovie(movie.titleID, user.userId);
+                    }}
+                  >
+                    Bookmark
+                  </Button>
+                </>
+              )}
           </div>
         </div>
       </div>
-      {user ? (
-        <Button
-        sx={{marginLeft:'5%',marginTop:'5%'}}
-          size="large"
-          variant="contained"
-          onClick={() => {
-            boomarkMovie(movie.titleID, user.userId);
-          }}
-        >
-          Bookmark
-        </Button>
-      ) : (
-        <></>
-      )}
-
-      {/* Read more link outside the container */}
     </div>
   ) : (
     <></>

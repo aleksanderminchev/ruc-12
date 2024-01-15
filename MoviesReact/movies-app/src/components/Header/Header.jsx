@@ -38,17 +38,26 @@ function Header() {
       <Toolbar
         sx={{
           border: "1px solid #000",
-          background: "#D9D9D9",
+          background: "gray", // Set this to the color of your navbar
           boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+          height: '77px',
+          padding: '20px',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <Button color="inherit" component={Link} to="/">
+        <div style={{ marginRight: 'auto' }}>
+        <Button color="inherit" component={Link} to="/" sx={{ fontSize: "3.1rem", color: "yellow", fontWeight: "bold", fontFamily: 'Poppins', marginRight: '8px' }}>
+          Film24
+        </Button>
+        <Button color="inherit" component={Link} to="/" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif', marginRight: '2px'}}>
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/movies">
+        <Button color="inherit" component={Link} to="/movies" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif', marginRight: '2px'}}>
           Movies
         </Button>
-        <Button color="inherit" component={Link} to="/actors">
+        <Button color="inherit" component={Link} to="/actors" sx={{ fontSize: "1.6rem", color: 'black', fontFamily:'serif'}}>
           Actors
         </Button>
 

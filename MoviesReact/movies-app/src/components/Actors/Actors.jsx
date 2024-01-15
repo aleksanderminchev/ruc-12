@@ -12,6 +12,7 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+
 function Actors() {
   const dispatch = useDispatch();
   const { actors, isLoading } = useSelector((state) => state.actor);
@@ -34,23 +35,10 @@ function Actors() {
       className="actors bg-dark"
     >
       <div className="container">
-        <Pagination
-          onChange={(event, value) => {
-            setPages(value);
-          }}
-          siblingCount={2}
-          boundaryCount={6}
-          sx={{ background: "grey", color: "grey" }}
-          count={actors.totalPage}
-          color="primary"
-          variant="outlined"
-          shape="rounded"
-        />
         <div className="row">
           <div className="col-md-2">
             <FilterBar forActor={true} applyFiltersActor={handleApplyFilters} />
           </div>
-          {/* Navbar component without the navbar class */}
           <div className="col-md-10">
             <div
               className="template "
@@ -87,38 +75,37 @@ function Actors() {
                               fontFamily: "Trajan Pro, serif",
                             }}
                           >
-                            {actor.fullName}
+                            {actor.fullName.split(" ").map((namePart, i) => (
+                              <span key={i} style={{ display: "block" }}>
+                                {namePart}
+                              </span>
+                            ))}
                           </h5>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
+                          >
+                            {`${actor.birthYear} - ${
+                              actor.deathYear !== "    "
+                                ? actor.deathYear
+                                : "Still Alive"
+                            }`}
+                          </p>
                           <p
                             className="card-text"
                             style={{ fontSize: "20px", fontFamily: "Poppins" }}
                           >
                             {actor.profession}
                           </p>
-                          <p
-                            className="card-text"
-                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
-                          >
-                            Aged:
-                            {actor.deathYear !== "    "
-                              ? parseInt(actor.deathYear) -
-                                parseInt(actor.birthYear)
-                              : new Date().getFullYear() -
-                                parseInt(actor.birthYear)}
-                          </p>
-                          <p
-                            className="card-text"
-                            style={{ fontSize: "20px", fontFamily: "Poppins" }}
-                          >
-                            {actor.birthYear} -{" "}
-                            {actor.deathYear !== "    "
-                              ? actor.deathYear
-                              : "Still Alive"}
-                          </p>
                           <Link
                             to={`/actor/${actor.nCost}`}
                             className="btn btn-primary mt-3"
-                            style={{ fontSize: "18px" }}
+                            style={{
+                              fontSize: "18px",
+                              position: "absolute",
+                              bottom: "10px",
+                              left: "10px",
+                            }}
                           >
                             Read More
                           </Link>
@@ -128,7 +115,25 @@ function Actors() {
                   ))}
                 </div>
               )}
-              {/* Add more cards for other actors as needed */}
+              <Pagination
+                onChange={(event, value) => {
+                  setPages(value);
+                }}
+                siblingCount={2}
+                boundaryCount={6}
+                sx={{
+                  background: "grey",
+                  color: "grey",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  fontSize: "34px",
+                  width: "100%",
+                }}
+                count={actors.totalPage}
+                color="primary"
+                variant="outlined"
+                shape="rounded"
+              />
             </div>
           </div>
         </div>

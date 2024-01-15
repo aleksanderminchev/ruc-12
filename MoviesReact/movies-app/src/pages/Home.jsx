@@ -20,12 +20,20 @@ function Home() {
     dispatch(getTopPopular());
   }, []);
   return (
-    <>
-      <MoviesListRow movies={newestMovies} title="Newest Movies" />
-      <MoviesListRow movies={currentPopular} title="Popular Movies" />
-
-      <MoviesListRow movies={mostPopularMovies} title="Top 10" />
-    </>
+   <div>
+      <div className="row">
+        <h2 style={{ fontSize: '50px', color: '#FFD700', fontWeight: 'bold' }}>Newest Movies</h2>
+        <MoviesListRow movies={newestMovies}  style={{ fontSize: '40px', color: '#FFD700', fontWeight: 'bold' }} />
+      </div>
+      <div className="row">
+        <h2 style={{ fontSize: '50px', color: '#FFD700', fontWeight: 'bold' }}>Popular Movies</h2>
+        <MoviesListRow movies={currentPopular}  style={{ fontSize: '40px', color: '#FFD700', fontWeight: 'bold' }} />
+      </div>
+      <div >
+        <h2 style={{ fontSize: '50px', color: '#FFD700', fontWeight: 'bold' }}>Top 10</h2>
+        <MoviesListRow movies={mostPopularMovies}  style={{ fontSize: '40px', color: '#FFD700', fontWeight: 'bold' }} />
+      </div>
+    </div>
   );
 }
 

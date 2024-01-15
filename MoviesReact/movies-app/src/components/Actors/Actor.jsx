@@ -1,5 +1,6 @@
 import MoviesListRow from "../../components/Movies/MoviesListRow";
 import { Button } from "@mui/material";
+
 function Actor({ user, actor, isLoading, actorMovies, bookmarkActor }) {
   return actor ? (
     <div
@@ -21,6 +22,11 @@ function Actor({ user, actor, isLoading, actorMovies, bookmarkActor }) {
               }}
             >
               {actor.fullName}
+              <div
+                style={{ borderBottom: "1px solid white", paddingBottom: "10px" }}
+              >
+                {/* Empty div for the white line */}
+              </div>
             </h2>
             <p
               style={{
@@ -29,18 +35,8 @@ function Actor({ user, actor, isLoading, actorMovies, bookmarkActor }) {
                 paddingBottom: "10px",
               }}
             >
-              {actor.profession}
+              <strong>Profession:</strong> {actor.profession}
             </p>
-
-            <div style={{ paddingBottom: "10px" }}>
-              {/* Empty div for the white line */}
-            </div>
-
-            <div
-              style={{ borderBottom: "1px solid white", paddingBottom: "10px" }}
-            >
-              {/* Empty div for the white line */}
-            </div>
           </div>
         </div>
       </div>
