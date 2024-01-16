@@ -98,7 +98,7 @@ const FilterBar = ({ forActor, applyFiltersMovie, applyFiltersActor }) => {
             <label htmlFor="rating">Rating:</label>
             <select
               onChange={(e) => {
-                setRating(e.target.value * 1.5);
+                setRating(Math.round(e.target.value * 2));
               }}
               className="form-select"
               id="rating"

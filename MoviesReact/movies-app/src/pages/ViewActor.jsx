@@ -4,6 +4,8 @@ import { bookMarkActor, getActor, getActorMovies } from "../redux/slices/actor";
 import { useSelector, useDispatch } from "../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
 import Actor from "../components/Actors/Actor";
+import { useSnackbar } from "../components/Snackbar";
+
 function ViewActor() {
   // Replace these with actual data from your database or API
   const dispatch = useDispatch();
@@ -12,17 +14,23 @@ function ViewActor() {
   const { actor, actorMovies, isLoading } = useSelector((state) => state.actor);
   const { user } = useSelector((state) => state.user);
 
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleBookmarkActor = async (movie_id, user_id) => {
     try {
       const response = await dispatch(bookMarkActor(movie_id, user_id));
       if (response) {
         console.log("Success");
+        enqueueSnackbar("Bookmarked actor. View in bookmarks", {
+          variant: "success",
+        });
       } else {
         console.log("Failed");
+        enqueueSnackbar("Error bookmarking actor", { variant: "error" });
       }
     } catch (e) {
       console.log(e);
+      enqueueSnackbar("Error bookmarking actor", { variant: "error" });
     }
   };
   useEffect(() => {

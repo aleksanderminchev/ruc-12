@@ -9,7 +9,9 @@ function MovieTest({ movie, boomarkMovie, user, rateMovie }) {
 
     const handleStarClick = (starValue) => {
       onRate(starValue);
-      rateMovie(movie.titleID, user.userId, starValue);
+      if (user) {
+        rateMovie(movie.titleID, user.userId, starValue);
+      }
     };
 
     for (let i = 1; i <= maxValue; i++) {

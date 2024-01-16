@@ -4,7 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../redux/slices/user";
 import { useSelector, useDispatch } from "../../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
+import { useSnackbar } from "../../components/Snackbar";
+
 function Signup() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -26,22 +30,26 @@ function Signup() {
     console.log(email, password);
     try {
       console.log("Show login message");
-      if (isErrorRepeart) {
+      if (isErrorRepeart()) {
         console.log(password);
         const response = await dispatch(
           signUp(email, password, firstName, lastName, repeatPassword)
         );
         if (response) {
           console.log("Show login message");
+          enqueueSnackbar("Registered successfully", { variant: "success" });
+
           navigate("/login");
         } else {
           console.log("Show error message");
+          enqueueSnackbar("Error with register", { variant: "error" });
         }
       } else {
         console.log("Show error message");
+        enqueueSnackbar("Passwords dont match", { variant: "error" });
       }
     } catch (error) {
-      console.log("Churka: ", error); // Handle errors, unauthorized, etc.
+      enqueueSnackbar("Error with register", { variant: "error" });
     }
   };
   return (

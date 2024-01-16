@@ -4,7 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../redux/slices/user";
 import { useSelector, useDispatch } from "../../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
+import { useSnackbar } from "../../components/Snackbar";
+
 function Login() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -18,12 +22,14 @@ function Login() {
       const response = await dispatch(login(email, password));
       if (response) {
         console.log("Show login message");
+        enqueueSnackbar("Logged In succcesfully", { variant: "success" });
         navigate("/");
       } else {
         console.log("Show error message");
+        enqueueSnackbar("Error with login", { variant: "error" });
       }
     } catch (error) {
-      console.log("Churka: ", error); // Handle errors, unauthorized, etc.
+      enqueueSnackbar("Error with login", { variant: "error" });
     }
   };
   return isLoading ? (
@@ -38,7 +44,7 @@ function Login() {
       <CircularProgress />
     </Box>
   ) : !user ? (
-    <div className="login" style={{ backgroundColor: "black", color: "black"}}>
+    <div className="login" style={{ backgroundColor: "black", color: "black" }}>
       <div className="template d-flex justify-content-center align-items-center vh-100 bg-primary bg-primary navbar navbar-expand-lg navbar-light bg-dark">
         <div
           className="form_container p-5 rounded bg-white"

@@ -4,7 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { updateProfile } from "../../redux/slices/user";
 import { useSelector, useDispatch } from "../../redux/store";
 import { Box, CircularProgress, Button } from "@mui/material";
+import { useSnackbar } from "../../components/Snackbar";
+
 function Update() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -26,7 +30,7 @@ function Update() {
     console.log(email, password);
     try {
       console.log("Show login message");
-      if (isErrorRepeart) {
+      if (isErrorRepeart()) {
         console.log(password);
         const response = await dispatch(
           updateProfile(
@@ -40,15 +44,19 @@ function Update() {
         );
         if (response) {
           console.log("Show login message");
-          navigate("/login");
+          enqueueSnackbar("Updated successfully", { variant: "success" });
+
+          navigate("/");
         } else {
           console.log("Show error message");
+          enqueueSnackbar("Error with update", { variant: "error" });
         }
       } else {
         console.log("Show error message");
+        enqueueSnackbar("Passwords dont match", { variant: "error" });
       }
     } catch (error) {
-      console.log("Churka: ", error); // Handle errors, unauthorized, etc.
+      enqueueSnackbar("Error with update", { variant: "error" });
     }
   };
   return (
