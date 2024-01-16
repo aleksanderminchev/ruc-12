@@ -13,16 +13,21 @@ function ViewMovie() {
   console.log(id);
   const { movie, isLoading } = useSelector((state) => state.movie);
   const { user } = useSelector((state) => state.user);
+  const { enqueueSnackbar } = useSnackbar();
+
   const rateMovie = async (movie_id, user_id, value) => {
     try {
       const response = await dispatch(rate(movie_id, user_id, value));
       if (response) {
         console.log("Success");
+        enqueueSnackbar("Rated movie", { variant: "success" });
       } else {
         console.log("Failed");
+        enqueueSnackbar("Already rated this movie", { variant: "error" });
       }
     } catch (e) {
       console.log(e);
+      enqueueSnackbar("Error rating movie", { variant: "error" });
     }
   };
   const handleBookmarkMovie = async (movie_id, user_id) => {
@@ -43,7 +48,6 @@ function ViewMovie() {
     }
   }, [dispatch, id]);
   // Function to split the cast into two groups
-  const { enqueueSnackbar } = useSnackbar();
   return !isLoading && !movie ? (
     <Box
       sx={{

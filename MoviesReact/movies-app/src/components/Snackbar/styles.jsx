@@ -17,7 +17,6 @@ export default function StyledNotistack() {
             width: "100%",
             padding: theme.spacing(1),
             margin: theme.spacing(0.25, 0),
-            boxShadow: theme.customShadows.z8,
             borderRadius: theme.shape.borderRadius,
             color: isLight
               ? theme.palette.common.white

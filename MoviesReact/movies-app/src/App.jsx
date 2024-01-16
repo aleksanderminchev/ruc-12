@@ -17,6 +17,7 @@ import UpdateAccount from "./pages/auth/UpdateAccount";
 import ViewActor from "./pages/ViewActor";
 import Bookmarks from "./components/Bookmarks/Bookmarks";
 import SearchResults from "./components/Movies/SearchResults";
+import SnackbarProvider from "./components/Snackbar";
 
 function App() {
   return (
@@ -24,52 +25,54 @@ function App() {
       <HelmetProvider>
         <Router>
           <ReduxProvider store={store}>
-            <ScrollToTop />
-            <Header />
-            <div style={{ margin: "20px" }}>
+            <SnackbarProvider>
+              <ScrollToTop />
+              <Header />
               <div style={{ margin: "20px" }}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/movie/:id" element={<ViewMovie />} />
-                  <Route path="/actor/:id" element={<ViewActor />} />
-                  <Route path="/movies" element={<MoviesList />} />
-                  <Route path="/searchResults" element={<SearchResults />} />
-                  <Route path="/bookmarks" element={<Bookmarks />} />
-                  <Route path="/moviesList" element={<MoviesListRow />} />
-                  <Route path="/signUp" element={<SignUp />} />
-                  <Route path="/login" element={<SignIn />} />
-                  <Route path="/profile" element={<UpdateAccount />} />
-                  <Route
-                    path="/movie"
-                    element={
-                      <>
-                        <h1 style={{ textAlign: "center" }}>My Movie App</h1>
-                        <Movie
-                          title="Inception"
-                          description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
-                          poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
-                        />
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/actors"
-                    element={
-                      <div className="actors bg-dark">
-                        <Actors
-                          title="Inception"
-                          description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
-                          poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
-                        />
-                      </div>
-                    }
-                  />
-                  {/* You can add more routes here */}
-                </Routes>
-              </div>
+                <div style={{ margin: "20px" }}>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/movie/:id" element={<ViewMovie />} />
+                    <Route path="/actor/:id" element={<ViewActor />} />
+                    <Route path="/movies" element={<MoviesList />} />
+                    <Route path="/searchResults" element={<SearchResults />} />
+                    <Route path="/bookmarks" element={<Bookmarks />} />
+                    <Route path="/moviesList" element={<MoviesListRow />} />
+                    <Route path="/signUp" element={<SignUp />} />
+                    <Route path="/login" element={<SignIn />} />
+                    <Route path="/profile" element={<UpdateAccount />} />
+                    <Route
+                      path="/movie"
+                      element={
+                        <>
+                          <h1 style={{ textAlign: "center" }}>My Movie App</h1>
+                          <Movie
+                            title="Inception"
+                            description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
+                            poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
+                          />
+                        </>
+                      }
+                    />
+                    <Route
+                      path="/actors"
+                      element={
+                        <div className="actors bg-dark">
+                          <Actors
+                            title="Inception"
+                            description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
+                            poster="https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
+                          />
+                        </div>
+                      }
+                    />
+                    {/* You can add more routes here */}
+                  </Routes>
+                </div>
 
-              {/* More <Movie /> components can be added here */}
-            </div>
+                {/* More <Movie /> components can be added here */}
+              </div>
+            </SnackbarProvider>
           </ReduxProvider>
         </Router>
       </HelmetProvider>
