@@ -9,10 +9,12 @@ namespace BooksTry.Models
     {
         public string Identifier { get; set; }
         public string Title { get; set; }
+        public string Poster { get; set; }
         public SearchResult(string identifier, string title)
         {
             Title = title;
             Identifier = identifier;
+            Poster = Poster;
         }
 
         public SearchResult()

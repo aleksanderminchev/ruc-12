@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "../../redux/store";
 import { getMoviesNewest } from "../../redux/slices/movie";
 import {
@@ -39,14 +39,23 @@ export default function Results({ movies, isLoading, title }) {
                 style={{ height: "100%", minHeight: "90%" }}
                 onClick={() => {
                   console.log("TestF");
-                  navigate(`/movie/${movie.identifier}`)
+                  navigate(`/movie/${movie.identifier}`);
                 }}
               >
                 <Card sx={{ height: "100%", backgroundColor: "#D9D9D9" }}>
                   <Stack direction={"column"}>
-                    <Typography >
-                      { movie.title}
-                    </Typography>
+                    <Box
+                      component="img"
+                      src={movie.poster}
+                      sx={{ height: 300 }}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "70%",
+                        objectFit: "cover",
+                      }}
+                      justifyContent={"space-between"}
+                    />
+                    <Typography>{movie.title}</Typography>
                   </Stack>
                 </Card>
               </div>

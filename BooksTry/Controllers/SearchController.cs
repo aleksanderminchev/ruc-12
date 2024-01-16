@@ -35,10 +35,12 @@ namespace BooksTry.Controllers
         {
             string id = reader.IsDBNull(0) ? "" : reader.GetString(0);
             string title = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            string poster = reader.IsDBNull(2) ? "" : reader.GetString(2);
             SearchResult item = new SearchResult()
             {
                 Title = title,
                 Identifier = id,
+                Poster = poster,
             };
 
             return item;
@@ -81,12 +83,17 @@ namespace BooksTry.Controllers
             {
                 Console.WriteLine(value.UserId);
                 Console.WriteLine(value.SearchText);
-                
+
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
 
                     conn.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand("SELECT * from string_search( @search, @user_id)", conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(
+                        "SELECT s.*, t.poster " +
+                        "FROM (SELECT * " +
+                        "      FROM string_search(@search, @user_id) " +
+                        ") AS s " +
+                        "JOIN title AS t ON s.titleId = t.titleId;", conn))
                     {
                         // Add parameters for the stored function
                         command.Parameters.AddWithValue("@user_id", value.UserId);
