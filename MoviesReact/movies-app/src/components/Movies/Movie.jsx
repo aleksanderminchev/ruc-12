@@ -26,8 +26,9 @@ function ViewMovie() {
           console.log("Failed");
           enqueueSnackbar("Already rated this movie", { variant: "error" });
         }
+      } else {
+        enqueueSnackbar("Need to Login", { variant: "error" });
       }
-      enqueueSnackbar("Need to Login", { variant: "error" });
     } catch (e) {
       console.log(e);
       enqueueSnackbar("Error rating movie", { variant: "error" });
@@ -38,17 +39,16 @@ function ViewMovie() {
       const response = await dispatch(bookMarkMovie(movie_id, user_id));
       if (response) {
         console.log("Success");
-        enqueueSnackbar("Bookmarked movie. View in Bookmarks", { variant: "success" });
-
+        enqueueSnackbar("Bookmarked movie. View in Bookmarks", {
+          variant: "success",
+        });
       } else {
         console.log("Failed");
         enqueueSnackbar("Error bookmarking movie", { variant: "error" });
-
       }
     } catch (e) {
       console.log(e);
       enqueueSnackbar("Error bookmarking movie", { variant: "error" });
-
     }
   };
   useEffect(() => {
