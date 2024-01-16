@@ -159,17 +159,43 @@ export function bookMarkMovie(movie_id, user_id) {
     }
   };
 }
+export function rate(titleId, userId, value) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post("http://localhost:8000/api/Review", {
+        TitleId: titleId,
+        UserId: userId,
+        RRating: value,
+      });
+      if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        console.log(response);
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "";
+      if (error?.errors?.json._schema) {
+        errorMessage = error?.errors?.json._schema[0];
+      } else if (error?.errors?.json) {
+        errorMessage = error?.errors.json[Object.keys(error?.errors.json)[0]];
+      } else {
+        errorMessage = error?.message;
+      }
+      dispatch(slice.actions.hasError(errorMessage));
+      return false;
+    }
+  };
+}
 export function search(searchText, userid) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/search",
-        {
-          SearchText: searchText,
-          UserId: userid,
-        }
-      );
+      const response = await axios.post("http://localhost:8000/api/search", {
+        SearchText: searchText,
+        UserId: userid,
+      });
       if (response.status === 404) {
         throw new Error("User not found");
       } else {

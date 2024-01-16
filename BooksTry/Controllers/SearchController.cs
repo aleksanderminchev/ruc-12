@@ -81,6 +81,7 @@ namespace BooksTry.Controllers
             {
                 Console.WriteLine(value.UserId);
                 Console.WriteLine(value.SearchText);
+                
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
 

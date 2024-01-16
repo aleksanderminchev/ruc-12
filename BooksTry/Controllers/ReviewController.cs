@@ -24,9 +24,9 @@ namespace BooksTry.Controllers
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                 {
-                    using (NpgsqlDataReader  reader = command.ExecuteReader())
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
                         List<Review> result = new List<Review>();
                         while (reader.Read())
@@ -40,12 +40,12 @@ namespace BooksTry.Controllers
             }
         }
 
-        private Review ReadItem(NpgsqlDataReader  reader)
+        private Review ReadItem(NpgsqlDataReader reader)
         {
             System.Console.WriteLine(reader.GetChar(5));
             int id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int userId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-            char titleId = reader.IsDBNull(5) ? '0' : reader.GetChar(5);
+            string titleId = reader.IsDBNull(5) ? "" : reader.GetString(5);
             int value = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
             string comment = reader.IsDBNull(3) ? "" : reader.GetString(3);
             DateTime createdAt = reader.IsDBNull(4) ? new DateTime() : reader.GetDateTime(4);
@@ -73,10 +73,10 @@ namespace BooksTry.Controllers
                 using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    using (NpgsqlCommand  command = new NpgsqlCommand (selectString, conn))
+                    using (NpgsqlCommand command = new NpgsqlCommand(selectString, conn))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        using (NpgsqlDataReader  reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                             {
@@ -102,17 +102,36 @@ namespace BooksTry.Controllers
         [HttpPost]
         public bool Post([FromBody] Review value)
         {
-            string insertString = "insert into user_rating (UserId, TitleId, Comment) values(@personId, @titleId, @comment);";
+            string confirmNoRateAlready = "SELECT EXISTS (" +
+                        " SELECT 1" +
+                        " FROM user_rating" +
+                        " WHERE user_id = @userId AND titleid = @titleId" +
+                        ") AS result;";
+            string insertString = "select * from rate(@userId, @titleId, @value );";
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (NpgsqlCommand  command = new NpgsqlCommand (insertString, conn))
+
+                using (NpgsqlCommand command = new NpgsqlCommand(confirmNoRateAlready, conn))
                 {
                     command.Parameters.AddWithValue("@userId", value.UserId);
-                    command.Parameters.AddWithValue("@titleId", value.TitleId);
-                    command.Parameters.AddWithValue("@comment", value.RText);
+                    command.Parameters.AddWithValue("@titleId", value.TitleId.TrimEnd());
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    bool ratingExists = (bool)command.ExecuteScalar();
+                    Console.WriteLine(ratingExists);
+                    if (ratingExists)
+                    {
+                        // A rating already exists, so you can handle it accordingly
+                        return false;
+                    }
+                }
+                using (NpgsqlCommand insertCommand = new NpgsqlCommand(insertString, conn))
+                {
+                    insertCommand.Parameters.AddWithValue("@userId", value.UserId);
+                    insertCommand.Parameters.AddWithValue("@titleId", value.TitleId.TrimEnd());
+                    insertCommand.Parameters.AddWithValue("@value", value.RRating);
+
+                    int rowsAffected = insertCommand.ExecuteNonQuery();
                     return true;
                 }
             }

@@ -9,7 +9,7 @@ namespace BooksTry.Models
     {
         public int ReviewId { get; set; }
         public int UserId { get; set; }
-        public char TitleId { get; set; }
+        public string TitleId { get; set; }
         public int RRating { get; set; }
         public string RText { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -19,7 +19,7 @@ namespace BooksTry.Models
 
         }
 
-        public Review(int reviewId, int userId, char titleId, int rating, string rText, DateTime createdAt)
+        public Review(int reviewId, int userId, string titleId, int rating, string rText, DateTime createdAt)
         {
             ReviewId = reviewId;
             UserId = userId;

@@ -473,10 +473,9 @@ namespace BooksTry.Controllers
         // Title review's
         private Review ReadReview(NpgsqlDataReader reader)
         {
-            System.Console.WriteLine(reader.GetChar(5));
             int reviewId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
             int personId = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-            char titleId = reader.IsDBNull(5) ? '0' : reader.GetChar(5);
+            string titleId = reader.IsDBNull(5) ? "" : reader.GetString(5);
             int rating = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
             string rText = reader.IsDBNull(3) ? "" : reader.GetString(3);
 
